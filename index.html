@@ -22,26 +22,49 @@
 
   <body>
 
-
     <main role="main" class="container">
-
       <div class="starter-template">
         <h1>D&D Character Manager</h1>
         <p class="lead">By Bhavin Shah and Jeovani Vela.</p>
       </div>
+
+      <form>
+        <div class="form-row align-items-center">
+          <div class="col-auto">
+            <input type="text" class="form-control mb-2 mr-sm-2" id="searchInput" placeholder="Search">
+          </div>
+          <div class="col-auto">
+            <label class="sr-only" for="inlineFormInputGroup">Username</label>
+              <select class="custom-select mb-2" id="searchOptions">
+                <option selected>Choose...</option>
+                <option value="1">Character</option>
+                <option value="2">Inventory</option>
+                <option value="3">Classes</option>
+                <option value="actions"> Actions</option>
+              </select>
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-2">Search</button>
+          </div>
+        </div>
+      </form>
+      <div class="container">
+        <p></p>
+      </div>
       <form>
         <div class="container">
           <div class="row" id = 'charNamePlus'>
-            <div class="col" id = "charName">
-              <h3 class="mb-0">Frodo</h3>
+            <div class="col">
+              <input class="form-control form-control-lg" type="text" value="Frodo" disabled>
+
               <h6> Name</h6>
             </div>
-            <div class="col" id = "charClass">
-              <h4 class="mb-0">Rogue</h4>
+            <div class="col">
+              <input class="form-control form-control-lg" type="text" value="Rogue" disabled>
               <h6> Class</h6>
             </div>
-            <div class="col" id = "charDemo">
-              <h4 class="mb-0">Halfing</h4>
+            <div class="col">
+              <input class="form-control form-control-lg" type="text" value="Halfing" disabled>
               <h6>Race</h6>
             </div>
           </div>
@@ -91,6 +114,7 @@
                 </tbody>
               </table>
               <button type="button" id ="charEdit" class = "btn btn-warning"> Edit</button>
+              <button type="button" id ="charSave" class = "btn btn-success" hidden> Save</button>
             </div>
             <div class="col">
               <nav aria-label="Page navigation example">

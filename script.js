@@ -5,8 +5,10 @@ var inventorySwitch = document.getElementById("showInventory");
 var addToInvent = document.getElementById("addToInven");
 var addForm = document.getElementById("addNewItem");
 var removeInvent = document.getElementsByClassName("btn btn-danger btn-sm");
+var charSavebutton = document.getElementById("charSave");
 var charEditButton = document.getElementById("charEdit");
 var statBlock = document.getElementById("statBlock");
+var charNamePlus = document.getElementById("charNamePlus");
 
 abilitySwitch.addEventListener("click", function() {changeCard(1)});
 inventorySwitch.addEventListener("click", function() {changeCard(0)});
@@ -17,15 +19,35 @@ for (var i = 0; i < removeInvent.length; i++)
     removeInvent[i] . addEventListener("click", removeItem);
 }
 
+charSavebutton.addEventListener('click', saveChar);
+
+function saveChar(event)
+{
+    for (var i = 0; i < statBlock.children.length; i++){
+        statBlock.children[i].children[1].firstElementChild.disabled = true;
+    }
+    for (var i = 0; i < charNamePlus.children.length; i ++){
+        currentNode = charNamePlus.children[i].firstElementChild;
+        currentNode.disabled = true;
+    }
+    charSavebutton.hidden = true;
+    charEditButton.hidden = false;
+
+}
+
 function updateChar(event)
 {
-    console.log("inside updateChar")
     console.log(statBlock);
     for (var i = 0; i < statBlock.children.length; i++){
-        console.log(statBlock.children[i].children[1]);
         statBlock.children[i].children[1].firstElementChild.disabled = false;
     }
-    charEditButton.textContent = "Save";
+    for (var i = 0; i < charNamePlus.children.length; i ++){
+        currentNode = charNamePlus.children[i].firstElementChild;
+        currentNode.disabled = false;
+    }
+    charSavebutton.hidden = false;
+    charEditButton.hidden = true;
+
 }
 
 function removeItem(event) 
