@@ -1,1 +1,7 @@
 # DND-Char-Management
+By Jeovani Velas and Bhavin Shah
+CS340 Group Project
+
+Dungeons and Dragons is a table-top RPG that, while being fairly free-form, has strict rules around character creation and management. Dungeons and Dragons have 2 personas; players and dungeonmasters(DM). The DM plays the role of storyteller, referee, and ultimately runs the game session. The player will manage 1 or more characters in the DM’s adventure. A character has defined attributes that a player has the ability to customize based on the ruleset of the game along with the discretion of the DM. During a play session, a player’s characters’ actions are driven by the imagination of the players, and those actions are resolved by dice-rolls in conjunction with the character attributes. This leads to a complex system where a player must reference multiple tables to decide what action they will take and the DM must then reference their own tables to resolve the action. The main problem we are trying to solve is how to make it easier for a dungeon master and to easily see what a character’s stats are. This will involve character(the specific player information), statistics (such as Strength, Dexterity, Wisdom), class (which determines their available actions), and inventory. The player will be able to add/modify their character via the webapp and it is assumed that any new entry to the DB will respect the rules the DM has decided and the player has gotten permission to do so like adding a new item to the inventory, or new statistics or actions.
+
+
