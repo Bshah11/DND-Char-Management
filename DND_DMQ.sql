@@ -83,8 +83,10 @@ SELECT inventory_id FROM inventory WHERE inventory_id='';
 SELECT class_id FROM class WHERE class_id='';
 
 -- Query for searching inventory items by Name
+SELECT inventory_id, name, damage, effects, weight FROM inventory WHERE name='';
 
 -- Query for select character by Name
+SELECT character_id, name, chosen_class_id, stat_id, chosen_demographic_info, total_hit_points, current_hit_points FROM `character` WHERE name='';
 
 -- Query for classes by name
 
