@@ -50,10 +50,13 @@ SELECT class_id FROM class WHERE class_id='';
 -- Quer for updating classes
 
 -- Query for deleting Char by CharID
+DELETE FROM `character` WHERE character_id = '';
 
 -- Query for deleting class by classID
+DELETE FROM `class` WHERE class_id='';
 
 -- Query for deleting statistic by statID
+DELETE FROM `statistic` WHERE stat_id='';
 
 -- Query for deleting inventory by CharID
 
