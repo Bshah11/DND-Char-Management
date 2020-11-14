@@ -59,7 +59,9 @@ DELETE FROM `class` WHERE class_id='';
 DELETE FROM `statistic` WHERE stat_id='';
 
 -- Query for deleting inventory by CharID
+DELETE `inventory` FROM `inventory` JOIN `character` ON character_id = '';
 
 -- Query for deleting action by actionID
+DELETE FROM `action` WHERE action_id='';
 
 
