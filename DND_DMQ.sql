@@ -5,17 +5,23 @@
 -- For all variable name the colon : will be used to 
 -- denoate the front-end variable name being used
 
+-- NOT inserting those values that are auto_increment
+
 -- Query for adding new character
 INSERT INTO `character` (name, chosen_class_id, stat_id, chosen_demographic_info, total_hit_points, current_hit_points)
 VALUES ('',(SELECT class_id FROM class),(SELECT stat_id FROM statistic),'','','');
 
 -- Query for adding new Statistics
-INSERT INTO `statistic` (stat_id, strength, dexterity, constitution, intelligence, wisdom, charisma) 
-VALUES ('', '', '', '', '', '', '');
+INSERT INTO `statistic` (strength, dexterity, constitution, intelligence, wisdom, charisma) 
+VALUES ('', '', '', '', '', '');
 
 -- Query for adding new inventory
+INSERT INTO `inventory` (inventory_id, name, damage, effects, weight) 
+VALUES ('', '', '', '', '');
 
 -- Query for adding new ability
+INSERT INTO `action` (name, description) 
+VALUES ('', '');
 
 -- Query for selecting statistics based statID
 
