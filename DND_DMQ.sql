@@ -1,4 +1,4 @@
--- Bhavin Shah and Jeovani Velas
+-- Bhavin Shah and Jeovani Vela
 -- DND Char Manager
 --11/12/2020
 
@@ -6,6 +6,8 @@
 -- denoate the front-end variable name being used
 
 -- Query for adding new character
+INSERT INTO `character` (name, chosen_class_id, stat_id, chosen_demographic_info, total_hit_points, current_hit_points)
+VALUES ('',(SELECT class_id FROM class),(SELECT stat_id FROM statistic),'','','');
 
 -- Query for adding new Statistics
 
