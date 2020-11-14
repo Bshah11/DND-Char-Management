@@ -89,8 +89,10 @@ SELECT inventory_id, name, damage, effects, weight FROM inventory WHERE name='';
 SELECT character_id, name, chosen_class_id, stat_id, chosen_demographic_info, total_hit_points, current_hit_points FROM `character` WHERE name='';
 
 -- Query for classes by name
+SELECT * FROM class WHERE name ='';
 
 -- Query for action by name
+SELECT * FROM action WHERE name='';
 
 -- Query for updating char entity
 -- This does not update statistic, or inventory
