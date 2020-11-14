@@ -24,10 +24,13 @@ INSERT INTO `action` (name, description)
 VALUES ('', '');
 
 -- Query for selecting statistics based statID
+SELECT stat_id FROM statistic WHERE stat_id='';
 
 -- Query for selecting inventory based on inventoryID
+SELECT inventory_id FROM inventory WHERE inventory_id='';
 
 -- Query for selecting class based on classID
+SELECT class_id FROM class WHERE class_id='';
 
 -- Query for searching inventory items by Name
 
