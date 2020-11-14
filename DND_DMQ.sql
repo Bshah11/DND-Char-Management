@@ -10,6 +10,8 @@ INSERT INTO `character` (name, chosen_class_id, stat_id, chosen_demographic_info
 VALUES ('',(SELECT class_id FROM class),(SELECT stat_id FROM statistic),'','','');
 
 -- Query for adding new Statistics
+INSERT INTO `statistic` (stat_id, strength, dexterity, constitution, intelligence, wisdom, charisma) 
+VALUES ('', '', '', '', '', '', '');
 
 -- Query for adding new inventory
 
