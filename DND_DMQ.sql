@@ -102,8 +102,10 @@ UPDATE `character` SET name = '', chosen_class_id='', chosen_demographic_info=''
 UPDATE `inventory` SET name='', damage='', effects='', weight='' WHERE inventory_id='';
 
 -- Query for updating Ability
+UPDATE `action` SET name='', description='' WHERE action_id='';
 
 -- Quer for updating classes
+UPDATE `class` SET name='', hit_points='' WHERE class_id='';
 
 -- Query for deleting Char by CharID
 DELETE FROM `character` WHERE character_id = '';
