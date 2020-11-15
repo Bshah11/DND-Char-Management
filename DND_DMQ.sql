@@ -99,6 +99,7 @@ SELECT * FROM action WHERE name='';
 UPDATE `character` SET name = '', chosen_class_id='', chosen_demographic_info='', total_hit_points='', current_hit_points='' WHERE character_id='';
 
 -- Query for updating inventory
+UPDATE `inventory` SET name='', damage='', effects='', weight='' WHERE inventory_id='';
 
 -- Query for updating Ability
 
