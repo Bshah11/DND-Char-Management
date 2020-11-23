@@ -9,11 +9,42 @@ var charSavebutton = document.getElementById("charSave");
 var charEditButton = document.getElementById("charEdit");
 var statBlock = document.getElementById("statBlock");
 var charNamePlus = document.getElementById("charNamePlus");
+var getCharbyName = document.getElementById("getCharByName");
+
+
+
+
+
+
 
 abilitySwitch.addEventListener("click", function() {changeCard(1)});
 inventorySwitch.addEventListener("click", function() {changeCard(0)});
 addToInvent.addEventListener("click", function() {showAddInventoryForm()});
 charEditButton.addEventListener("click", updateChar);
+getCharbyName.addEventListener("click", getChar);
+
+
+// Server Requests
+function getChar(event)
+{
+    console.log("inside getChar")
+    var req = new XMLHttpRequest();
+    var payload = {};
+    payload.name = "test";
+    req.open('GET', 'getCharbyID', true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load', function(){
+        if(req.status >= 200 && req.status < 400){
+            console.log("inside response")
+          } else {
+            console.log("Error in network request: " + req.statusText);
+          }});
+    req.send(JSON.stringify(payload));
+    console.log("back to clientside")
+
+}
+
+
 for (var i = 0; i < removeInvent.length; i++) 
 {
     removeInvent[i] . addEventListener("click", removeItem);

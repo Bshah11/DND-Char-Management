@@ -1,0 +1,180 @@
+    <main role="main" class="container">
+      <div class="starter-template">
+        <h1>D&D Character Manager</h1>
+        <p class="lead">By Bhavin Shah and Jeovani Vela.</p>
+      </div>
+      <form>
+        <button type="submit" class = "btn btn-primary mb-2" id = "getCharByName">Get Char by ID</button>
+      </form>
+      <form>
+        <div class="form-row align-items-center">
+          <div class="col-auto">
+            <input type="text" class="form-control mb-2 mr-sm-2" id="searchInput" placeholder="Search">
+          </div>
+          <div class="col-auto">
+            <label class="sr-only" for="inlineFormInputGroup">Username</label>
+              <select class="custom-select mb-2" id="searchOptions">
+                <option selected>Choose...</option>
+                <option value="1">Character</option>
+                <option value="2">Inventory</option>
+                <option value="3">Classes</option>
+                <option value="actions"> Actions</option>
+              </select>
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-2">Search</button>
+          </div>
+        </div>
+      </form>
+      <div class="container">
+        <p></p>
+      </div>
+      <form>
+        <div class="container">
+          <div class="row" id = 'charNamePlus'>
+            <div class="col">
+              <input class="form-control form-control-lg" type="text" value="Frodo" disabled>
+
+              <h6> Name</h6>
+            </div>
+            <div class="col">
+              <input class="form-control form-control-lg" type="text" value="Rogue" disabled>
+              <h6> Class</h6>
+            </div>
+            <div class="col">
+              <input class="form-control form-control-lg" type="text" value="Halfing" disabled>
+              <h6>Race</h6>
+            </div>
+          </div>
+        </di>
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Statistic</th>
+                    <th scope="col">Score</th>
+                    <th scope="col">Modifier</th>
+                  </tr>
+                </thead>
+                <tbody id = "statBlock">
+                  <tr>
+                    <th scope="row">Strength</th>
+                    <td><input type="text" value="18" disabled></td>
+                    <td>+4</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Dexterity</th>
+                    <td><input type="text" value="13" disabled></td>
+                    <td>+1</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Constitution</th>
+                    <td><input type="text" value="16" disabled></td>
+                    <td>+3</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Intelligence</th>
+                    <td><input type="text" value="9" disabled></td>
+                    <td>-1</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Wisdom</th>
+                    <td><input type="text" value="12" disabled></td>
+                    <td>+1</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Charisma</th>
+                    <td><input type="text" value="10" disabled></td>
+                    <td>+0</td>
+                  </tr>
+                </tbody>
+              </table>
+              <button type="button" id ="charEdit" class = "btn btn-warning"> Edit</button>
+              <button type="button" id ="charSave" class = "btn btn-success" hidden> Save</button>
+            </div>
+            <div class="col">
+              <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                  <li class="page-item"><a class="page-link" id ='showInventory'>Inventory</a></li>
+                  <li class="page-item"><a class="page-link" id ='showAbilties'>Abilities</a></li>
+                </ul>
+                <div class="card" id = "inventoryCard">
+                  <div class="card-body"> <!-- put things in card body -->
+                    <table class="table" id = "inventoryTable">
+                      <thead>
+                        <tr>
+                          <th scope="col">Name</th>
+                          <th scope="col">Damage</th>
+                          <th scope="col">effects</th>
+                          <th scope="col">Weight</th>
+                          <th scope="col">Remove</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">Longsword</th>
+                          <td>1d8</td>
+                          <td>Slicing damage</td>
+                          <td>18 lbs</td>
+                          <td><button type="button" class="btn btn-danger btn-sm">Remove</button></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Healing Potion</th>
+                          <td>Healing 2d8</td>
+                          <td>Drink to consume</td>
+                          <td>2 lbs.</td>
+                          <td><button type="button" class="btn btn-danger btn-sm">Remove</button></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Bedroll</th>
+                          <td>N/A</td>
+                          <td>Allows you to rest</td>
+                          <td>15 lbs.</td>
+                          <td><button type="button" class="btn btn-danger btn-sm">Remove</button></td>
+                        </tr>
+                        <tr>
+                          <th><button type="button" class="btn btn-outline-primary" id="addToInven">Add to Inventory</button></th>
+                        </tr>
+                        <tr id ='addNewItem' hidden>
+                          <th scope="row"><input type="text"  placeholder="Name of item" id = 'inventoryNameNew'></th>
+                          <td><input type="text"  placeholder="Damage of item" id = 'inventoryDamageNew'></td>
+                          <td><input type="text"  placeholder="Effect of item" id = 'inventoryEffectsNew'></td>
+                          <td><input type="text"  placeholder="Weight of item" id = 'inventoryweightNew'></td>
+                          <td><button type="button" class="btn btn-success">Add to Inventory</button></td>
+                        </tr>
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card" id = "abilitiesCard" hidden>
+                  <div class="card-body"> <!-- put things in card body -->
+                    <table class="table" id =  "abilitiesTable">
+                      <head>
+                        <th scope="col">Action Name</th>
+                        <th scope="col"> Description</th>
+                      </head>
+                      <tbody>
+                        <tr>
+                          <td>Attack</td>
+                          <td> Use current weapon to attack</td>
+                      </tr>
+                      <tr>
+                        <td>Hide</td>
+                        <td>Roll D20 and add dex bonus</td>
+                      </tr>
+
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+              </nav>
+            </div>
+          </div>
+        </div>
+      </form>
+
