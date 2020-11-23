@@ -9,7 +9,10 @@ var charSavebutton = document.getElementById("charSave");
 var charEditButton = document.getElementById("charEdit");
 var statBlock = document.getElementById("statBlock");
 var charNamePlus = document.getElementById("charNamePlus");
-var getCharbyName = document.getElementById("getCharByName");
+var readByName = document.getElementById("readByName"); // This is the search Button
+var searchName = document.getElementById("searchName");
+var searchType = document.getElementById("searchType")
+
 
 
 
@@ -21,21 +24,30 @@ abilitySwitch.addEventListener("click", function() {changeCard(1)});
 inventorySwitch.addEventListener("click", function() {changeCard(0)});
 addToInvent.addEventListener("click", function() {showAddInventoryForm()});
 charEditButton.addEventListener("click", updateChar);
-getCharbyName.addEventListener("click", getChar);
+readByName.addEventListener("click", readName);
 
 
 // Server Requests
-function getChar(event)
+function readName(event)
 {
-    console.log("inside getChar")
+    // This is the read functionality of our code base driven by the search bar
+    // This takes in a entity type and a search string and return object IF name is found.
+    // Question: How do we handle multiple returns?
+
+    event.preventDefault();
+    console.log("inside readByName")
     var req = new XMLHttpRequest();
     var payload = {};
-    payload.name = "test";
-    req.open('GET', 'getCharbyID', true);
+    payload.name = searchName.value;
+    payload.type = searchType.value;
+    console.log(payload)
+    req.open('POST', '/readByName', true);
     req.setRequestHeader('Content-Type', 'application/json');
     req.addEventListener('load', function(){
         if(req.status >= 200 && req.status < 400){
             console.log("inside response")
+            var response = JSON.parse(req.responseText)
+            console.log(response.result)
           } else {
             console.log("Error in network request: " + req.statusText);
           }});

@@ -11,8 +11,11 @@ app.use(express.static(__dirname + '/public'));
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 
+
 app.set('port', 32323); // Bhavin's branch
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get('/',function(req,res,next){
     context ={};
@@ -20,12 +23,24 @@ app.get('/',function(req,res,next){
     });
 
 
-//GETS
-app.get('/getCharbyID', function(req, res, next){
+//POST - passing data via body of req
+app.post('/readByName', function(req, res, next){
+    // This post will represent the read functionality from our DB
+    // It will take in the client side request (entity type and search string)
+    // It will send back the object(s) found
     console.log("serverside getChar")
     context = {};
     var query = req.body;
-    console.log(query.name);
+    var sqlQuery = 'select * from \`' + query.type + '\` where name = \'' + query.name +'\' ;';
+    console.log(sqlQuery);
+     mysql.pool.query (sqlQuery, function(err, result){
+        if(err){
+            next(err);
+            return;
+          }
+        context.result = JSON.parse(JSON.stringify(result));
+        res.send(context);
+     });
 });
 
 app.use(function(req,res){

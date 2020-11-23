@@ -4,25 +4,22 @@
         <p class="lead">By Bhavin Shah and Jeovani Vela.</p>
       </div>
       <form>
-        <button type="submit" class = "btn btn-primary mb-2" id = "getCharByName">Get Char by ID</button>
-      </form>
-      <form>
         <div class="form-row align-items-center">
           <div class="col-auto">
-            <input type="text" class="form-control mb-2 mr-sm-2" id="searchInput" placeholder="Search">
+            <input type="text" class="form-control mb-2 mr-sm-2" id="searchName" placeholder="Search">
           </div>
           <div class="col-auto">
             <label class="sr-only" for="inlineFormInputGroup">Username</label>
-              <select class="custom-select mb-2" id="searchOptions">
+              <select class="custom-select mb-2" id="searchType">
                 <option selected>Choose...</option>
-                <option value="1">Character</option>
-                <option value="2">Inventory</option>
-                <option value="3">Classes</option>
-                <option value="actions"> Actions</option>
+                <option value="character">Character</option>
+                <option value="inventory">Inventory</option>
+                <option value="class">Classes</option>
+                <option value="action"> Actions</option>
               </select>
           </div>
           <div class="col-auto">
-            <button type="submit" class="btn btn-primary mb-2">Search</button>
+            <button type="submit" id = "readByName" class="btn btn-primary mb-2">Search</button>
           </div>
         </div>
       </form>
