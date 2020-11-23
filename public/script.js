@@ -47,20 +47,26 @@ function readName(event)
         if(req.status >= 200 && req.status < 400){
             console.log("inside response")
             var response = JSON.parse(req.responseText)
-            console.log(response.result)
+            console.log(response.result);
+            console.log(response.type);
+            // PROCESS QUERY AND DISPLAY TO CLIENT
           } else {
             console.log("Error in network request: " + req.statusText);
           }});
     req.send(JSON.stringify(payload));
     console.log("back to clientside")
 
+};
+
+function createInstance(){
+    // PLACEHOLDER
 }
 
 
 for (var i = 0; i < removeInvent.length; i++) 
 {
     removeInvent[i] . addEventListener("click", removeItem);
-}
+};
 
 charSavebutton.addEventListener('click', saveChar);
 

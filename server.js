@@ -39,6 +39,7 @@ app.post('/readByName', function(req, res, next){
             return;
           }
         context.result = JSON.parse(JSON.stringify(result));
+        context.type = query.type;
         res.send(context);
      });
 });
