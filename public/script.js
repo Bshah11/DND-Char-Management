@@ -11,7 +11,10 @@ var statBlock = document.getElementById("statBlock");
 var charNamePlus = document.getElementById("charNamePlus");
 var readByName = document.getElementById("readByName"); // This is the search Button
 var searchName = document.getElementById("searchName");
-var searchType = document.getElementById("searchType")
+var searchType = document.getElementById("searchType");
+var nameChar = document.getElementById("charName");
+var classChar = document.getElementById("charClass");
+var demoChar = document.getElementById('charDemo');
 
 
 
@@ -47,15 +50,24 @@ function readName(event)
         if(req.status >= 200 && req.status < 400){
             console.log("inside response")
             var response = JSON.parse(req.responseText)
-            console.log(response.result);
             console.log(response.type);
-            // PROCESS QUERY AND DISPLAY TO CLIENT
+            console.log(response.result);
+            console.log(response.statBlock);
+            console.log(response.inventory);
+            console.log(response.actions);
+            showChar(response.result[0], response.statBlock)
           } else {
             console.log("Error in network request: " + req.statusText);
           }});
     req.send(JSON.stringify(payload));
     console.log("back to clientside")
 
+};
+
+function showChar(char, stats){
+    console.log(char);
+    nameChar.value = char.name;
+    demoChar.value = char.chosen_demographic_info;
 };
 
 function createInstance(){
