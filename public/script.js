@@ -1,4 +1,4 @@
-var inventoryCard = document.getElementById('inventoryCard');
+var inventoryTable = document.getElementById('inventoryTable');
 var abilitiesCard = document.getElementById('abilitiesCard');
 var abilitySwitch = document.getElementById('showAbilties');
 var inventorySwitch = document.getElementById("showInventory");
@@ -55,7 +55,11 @@ function readName(event)
             console.log(response.statBlock);
             console.log(response.inventory);
             console.log(response.actions);
-            showChar(response.result[0], response.statBlock)
+            if (response.type = 'character'){
+                showChar(response.result[0]);
+                showStat(response.statBlock);
+                showCharInven(response.inventory);
+            }
           } else {
             console.log("Error in network request: " + req.statusText);
           }});
@@ -64,10 +68,43 @@ function readName(event)
 
 };
 
-function showChar(char, stats){
+function showCharInven(backpack){
+    console.log(backpack);
+    var curPack = inventoryTable.children[1];
+    pack = document.createElement("TBODY");
+    for(item in backpack){
+        curItem = backpack[item]
+        var curRow = pack.insertRow(0)
+        var name = curRow.insertCell(0);
+        name.innerHTML = "<th scope=\"row\">" + curItem.name +"</th>";
+        var damage = curRow.insertCell(1);
+        damage.innerHTML = "<td>" + curItem.damage + "</td>";
+        var effects = curRow.insertCell(2);
+        effects.innerHTML = "<td>" + curItem.effects + "</td>";
+        var weight = curRow.insertCell(3);
+        weight.innerHTML = "<td>" + curItem.weight + "</td>"
+    }
+    console.log(pack);
+    inventoryTable.replaceChild(pack, inventoryTable.children[1]);
+
+};
+
+function showStat(stats){
+    console.log(stats);
+    curNode = statBlock.firstElementChild
+    for (let x in stats[0]){
+        if (x != 'stat_id'){
+            curNode.children[1].firstElementChild.value = stats[0][x];
+            curNode = curNode.nextElementSibling;
+            }
+        }
+    }
+
+function showChar(char){
     console.log(char);
     nameChar.value = char.name;
     demoChar.value = char.chosen_demographic_info;
+    classChar.value = char.chosen_class_id;
 };
 
 function createInstance(){

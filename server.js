@@ -1,19 +1,19 @@
 const http = require('http');
 const express = require('express');
-const path = require('path');
 var mysql = require('./dbcon.js');
-var bodyParser = require('body-parser');
-const { strict } = require('assert');
+var app = express();
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
-const app = express();
+var bodyParser = require('body-parser');
+
+
+
 app.use(express.json());
-app.use(express.static(__dirname + '/public'));
+
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-
-
-app.set('port', 32323); // Bhavin's branch
+app.set('port', 32323);
+app.use(express.static('public'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -21,8 +21,9 @@ app.use(bodyParser.json());
 
 //SQL selectors
 var getStatID = 'SELECT * FROM \`statistic\` WHERE stat_id= ';
-var getCharInventory =  'SELECT \`inventory_id\` FROM \`charinventory\` WHERE character_id=';
+//var getCharInventory =  'SELECT \`inventory_id\` FROM \`charinventory\` WHERE character_id=';
 var getCharAction =  'SELECT \`action_id\` FROM \`actionclass\` WHERE class_id=';
+var getCharInventory = 'select damage, effects, name, weight from inventory inner join charinventory on inventory.inventory_id = charinventory.inventory_id WHERE charinventory.character_id =';
 
 app.get('/',function(req,res,next){
     context ={};
@@ -75,19 +76,19 @@ app.post('/readByName', function(req, res, next){
             next(err);
             return;
           }   
-          context.statBlock = JSON.stringify(result);
+          context.statBlock = JSON.parse(JSON.stringify(result));
           mysql.pool.query(getCharInventory + String(curChar.character_id) +";" , function(err, result){
             if(err){
               next(err);
               return;
             }   
-            context.inventory = JSON.stringify(result);
+            context.inventory = JSON.parse(JSON.stringify(result));
             mysql.pool.query(getCharAction + String(curChar.chosen_class_id)+";", function(err,result){
               if(err){
                 next(err);
                 return;
               }   
-              context.actions = JSON.stringify(result);
+              context.actions = JSON.parse(JSON.stringify(result));
               res.send(context);
             })
           })
@@ -111,7 +112,6 @@ app.use(function(err, req, res, next){
 app.listen(app.get('port'), function(){
     console.log('Express started on http://localhost:' + app.get('port') + '; press Ctrl-C to terminate.');
   });
-
 
 /*
 const server = http.createServer(app);
