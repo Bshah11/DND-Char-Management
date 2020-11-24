@@ -26,8 +26,8 @@ VALUES ('', '');
 -- Query for selecting statistics based statID
 SELECT stat_id FROM statistic WHERE stat_id='';
 
--- Query for selecting inventory based on inventoryID
-SELECT inventory_id FROM inventory WHERE inventory_id='';
+-- Query for selecting inventory based on CharID
+SELECT * FROM charinventory WHERE character_id='';
 
 -- Query for selecting class based on classID
 SELECT class_id FROM class WHERE class_id='';
@@ -41,8 +41,8 @@ SELECT character_id, name, chosen_class_id, stat_id, chosen_demographic_info, to
 -- Query for classes by name
 SELECT * FROM class WHERE name ='';
 
--- Query for action by name
-SELECT * FROM action WHERE name='';
+-- Query for action by class
+SELECT * FROM actionclass WHERE class_id='';
 
 -- Query for updating char entity
 -- This does not update statistic, or inventory
