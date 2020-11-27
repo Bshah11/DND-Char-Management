@@ -46,8 +46,8 @@
         </di>
         <div class="container">
           <div class="row">
-            <div class="col">
-              <table class="table">
+            <div class="col-3">
+              <table class="table-responsive-sm">
                 <thead>
                   <tr>
                     <th scope="col">Statistic</th>
@@ -58,38 +58,36 @@
                 <tbody id = "statBlock">
                   <tr>
                     <th scope="row">Strength</th>
-                    <td><input type="text" value="18" disabled></td>
+                    <td><input size="1" type="text" value="18" disabled></td>
                     <td>+4</td>
                   </tr>
                   <tr>
                     <th scope="row">Dexterity</th>
-                    <td><input type="text" value="13" disabled></td>
+                    <td><input size="1" type="text" value="13" disabled></td>
                     <td>+1</td>
                   </tr>
                   <tr>
                     <th scope="row">Constitution</th>
-                    <td><input type="text" value="16" disabled></td>
+                    <td><input size="1" type="text" value="16" disabled></td>
                     <td>+3</td>
                   </tr>
                   <tr>
                     <th scope="row">Intelligence</th>
-                    <td><input type="text" value="9" disabled></td>
+                    <td><input size="1" type="text" value="9" disabled></td>
                     <td>-1</td>
                   </tr>
                   <tr>
                     <th scope="row">Wisdom</th>
-                    <td><input type="text" value="12" disabled></td>
+                    <td><input size="1" type="text" value="12" disabled></td>
                     <td>+1</td>
                   </tr>
                   <tr>
                     <th scope="row">Charisma</th>
-                    <td><input type="text" value="10" disabled></td>
+                    <td><input size="1" type="text" value="10" disabled></td>
                     <td>+0</td>
                   </tr>
                 </tbody>
               </table>
-              <button type="button" id ="charEdit" class = "btn btn-warning"> Edit</button>
-              <button type="button" id ="charSave" class = "btn btn-success" hidden> Save</button>
             </div>
             <div class="col">
               <nav aria-label="Page navigation example">
@@ -130,20 +128,30 @@
                           <td>Allows you to rest</td>
                           <td>15 lbs.</td>
                           <td><button type="button" class="btn btn-danger btn-sm">Remove</button></td>
-                        </tr>
-                        <tr>
-                          <th><button type="button" class="btn btn-outline-primary" id="addToInven">Add to Inventory</button></th>
-                        </tr>
-                        <tr id ='addNewItem' hidden>
-                          <th scope="row"><input type="text"  placeholder="Name of item" id = 'inventoryNameNew'></th>
-                          <td><input type="text"  placeholder="Damage of item" id = 'inventoryDamageNew'></td>
-                          <td><input type="text"  placeholder="Effect of item" id = 'inventoryEffectsNew'></td>
-                          <td><input type="text"  placeholder="Weight of item" id = 'inventoryweightNew'></td>
-                          <td><button type="button" class="btn btn-success">Add to Inventory</button></td>
-                        </tr>
-                        
+                        </tr>                     
                       </tbody>
                     </table>
+                     <form>
+                      <div id ='addInventForm' class="row">
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Name">
+                        </div>
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Damage">
+                        </div>
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Effects">
+                        </div>
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Weight">
+                        </div>
+                      </div>
+                      <div class = "row">
+                        <div class = "col">
+                          <button type = "button" id='addInvent' class="btn btn-success">Add new item</button>
+                        </div>
+                      </div>
+                    </form>
                   </div>
                 </div>
                 <div class="card" id = "abilitiesCard" hidden>
@@ -158,20 +166,34 @@
                           <td>Attack</td>
                           <td> Use current weapon to attack</td>
                       </tr>
-                      <tr>
-                        <td>Hide</td>
-                        <td>Roll D20 and add dex bonus</td>
-                      </tr>
-
-
+                        <tr>
+                          <td>Hide</td>
+                          <td>Roll D20 and add dex bonus</td>
+                        </tr>
                       </tbody>
                     </table>
+                    <form id ='addActionForm'>
+                      <div class="row">
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Name">
+                        </div>
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="Description">
+                        </div>
+                      </div>
+                      <div class = "row">
+                        <div class = "col">
+                          <button type = "button" class="btn btn-success" id = 'addAction'>Add new Action</button>
+                        </div>
+                      </div>
+                    </form>
                   </div>
                 </div>
-                
               </nav>
             </div>
           </div>
+        <button type="button" id ="charEdit" class = "btn btn-warning"> Edit</button>
+        <button type="button" id ="charSave" class = "btn btn-success" hidden> Save</button>
         </div>
       </form>
 

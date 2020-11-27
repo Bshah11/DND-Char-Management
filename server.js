@@ -21,9 +21,10 @@ app.use(bodyParser.json());
 
 //SQL selectors
 var getStatID = 'SELECT * FROM \`statistic\` WHERE stat_id= ';
-//var getCharInventory =  'SELECT \`inventory_id\` FROM \`charinventory\` WHERE character_id=';
-var getCharAction =  'SELECT \`action_id\` FROM \`actionclass\` WHERE class_id=';
+var getCharAction =  'select name, description from action inner JOIN actionclass on actionclass.action_id = action.action_id where actionclass.class_id =';
 var getCharInventory = 'select damage, effects, name, weight from inventory inner join charinventory on inventory.inventory_id = charinventory.inventory_id WHERE charinventory.character_id =';
+var addInventItem = 'INSERT INTO inventory (name, damage, effects, weight) VALUES ( ?,?,?,?)';
+var connectItemChar = 'INSERT INTO charinventory (inventory_id, character_id) VALUES (?,?)';
 
 app.get('/',function(req,res,next){
     context ={};
@@ -50,7 +51,35 @@ app.post('/readByID', function(req,res, next){
       });
     });
 
-
+app.post('/addToInventory', function(req, res, next){
+  console.log('serverside AddtoInventory');
+  context = {};
+  var query =  req.body;
+  console.log(query);
+  mysql.pool.query(addInventItem , [query.name, query.damage, query.effect, query.weight], function(err, result){
+    if (err){
+      next(err);
+      return
+    };
+    console.log(result.insertId);
+    mysql.pool.query(connectItemChar,[result.insertId, query.charID], function(err, result){
+      if (err){
+        next(err);
+        return
+      };
+      console.log(getCharInventory + query.charID+";");
+      mysql.pool.query( getCharInventory + query.charID+";", function(err, result){
+        if (err){
+          next(err);
+          return
+        };
+        context.inventory = JSON.parse(JSON.stringify(result));
+        context.character_id = charID;
+        res.send(context);
+      })
+    })
+  })
+});
 
 app.post('/readByName', function(req, res, next){
     // This post will represent the read functionality from our DB
@@ -69,6 +98,8 @@ app.post('/readByName', function(req, res, next){
       console.log(result);
       context.result = JSON.parse(JSON.stringify(result));
       context.type = query.type;
+
+      // Returns full Char information
       if (query.type == 'character'){
         var curChar = result[0];
         mysql.pool.query(getStatID + String(curChar.stat_id)+";", function(err, result){

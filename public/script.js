@@ -1,8 +1,10 @@
 var inventoryTable = document.getElementById('inventoryTable');
+var abilitiesTable = document.getElementById('abilitiesTable');
 var abilitiesCard = document.getElementById('abilitiesCard');
 var abilitySwitch = document.getElementById('showAbilties');
 var inventorySwitch = document.getElementById("showInventory");
-var addToInvent = document.getElementById("addToInven");
+var addToInvent = document.getElementById("addInvent");
+var addToAction = document.getElementById("addAction");
 var addForm = document.getElementById("addNewItem");
 var removeInvent = document.getElementsByClassName("btn btn-danger btn-sm");
 var charSavebutton = document.getElementById("charSave");
@@ -15,6 +17,7 @@ var searchType = document.getElementById("searchType");
 var nameChar = document.getElementById("charName");
 var classChar = document.getElementById("charClass");
 var demoChar = document.getElementById('charDemo');
+var curCHAR;
 
 
 
@@ -25,12 +28,50 @@ var demoChar = document.getElementById('charDemo');
 
 abilitySwitch.addEventListener("click", function() {changeCard(1)});
 inventorySwitch.addEventListener("click", function() {changeCard(0)});
-addToInvent.addEventListener("click", function() {showAddInventoryForm()});
 charEditButton.addEventListener("click", updateChar);
 readByName.addEventListener("click", readName);
+addToInvent.addEventListener("click",addInventForm);
+addToAction.addEventListener("click", addActionForm);
+
 
 
 // Server Requests
+
+function addActionForm(e){
+    // This function will add a new action to the current class
+    console.log("Inside action form client-before");
+    console.log("")
+
+};
+
+function addInventForm(e){
+    var addForm = document.getElementById("addInventForm").children
+    console.log(addForm);
+    console.log("name: " + addForm[0].firstElementChild.value);
+    var req = new XMLHttpRequest();
+    var payload = {};
+    payload.name = addForm[0].firstElementChild.value;
+    payload.damage = addForm[1].firstElementChild.value;
+    payload.effect = addForm[2].firstElementChild.value;
+    payload.weight = addForm[3].firstElementChild.value;
+    payload.charID = curCHAR.character_id;
+    payload.classID = curCHAR.chosen_class_id;
+    console.log(payload);
+    req.open('POST', '/addToInventory');
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load', function(){
+        if (req.status >= 200 && req.status < 400){
+            console.log('inside response');
+            console.log(JSON.parse(req.inventory));
+        } else {
+            console.log("error in network request: " + req.statusText);
+        }});
+    req.send(JSON.stringify(payload));
+    
+};
+
+
+
 function readName(event)
 {
     // This is the read functionality of our code base driven by the search bar
@@ -38,7 +79,7 @@ function readName(event)
     // Question: How do we handle multiple returns?
 
     event.preventDefault();
-    console.log("inside readByName")
+    console.log("inside readByName");
     var req = new XMLHttpRequest();
     var payload = {};
     payload.name = searchName.value;
@@ -50,15 +91,18 @@ function readName(event)
         if(req.status >= 200 && req.status < 400){
             console.log("inside response")
             var response = JSON.parse(req.responseText)
-            console.log(response.type);
+           /* console.log(response.type);
             console.log(response.result);
             console.log(response.statBlock);
             console.log(response.inventory);
             console.log(response.actions);
+            */
             if (response.type = 'character'){
+                curCHAR = response.result[0];
                 showChar(response.result[0]);
                 showStat(response.statBlock);
                 showCharInven(response.inventory);
+                showAbilities(response.actions);
             }
           } else {
             console.log("Error in network request: " + req.statusText);
@@ -68,12 +112,28 @@ function readName(event)
 
 };
 
+function showAbilities(actions){
+    var curAbilities = document.getElementById("abilitiesTable").children[1];
+    console.log(actions);
+    classActions = document.createElement("TBODY");
+    for (action in actions){
+        curAction  = actions[action];
+        var curRow = classActions.insertRow(0);
+        var name = curRow.insertCell(0);
+        name.innerHTML = "<th scope=\"row\">" + curAction.name +"</th>";
+        var description = curRow.insertCell(1);
+        description.innerHTML = "<td>" + curAction.description + "</td>";
+    }
+    console.log(classActions);
+    abilitiesTable.replaceChild(classActions, curAbilities);
+};
+
 function showCharInven(backpack){
     console.log(backpack);
     var curPack = inventoryTable.children[1];
     pack = document.createElement("TBODY");
     for(item in backpack){
-        curItem = backpack[item]
+        curItem = backpack[item];
         var curRow = pack.insertRow(0)
         var name = curRow.insertCell(0);
         name.innerHTML = "<th scope=\"row\">" + curItem.name +"</th>";
@@ -83,9 +143,11 @@ function showCharInven(backpack){
         effects.innerHTML = "<td>" + curItem.effects + "</td>";
         var weight = curRow.insertCell(3);
         weight.innerHTML = "<td>" + curItem.weight + "</td>"
-    }
+        var removeItem = curRow.insertCell(4);
+        removeItem.innerHTML = '<button type="button" class="btn btn-danger btn-sm">Remove</button>';
+        }
     console.log(pack);
-    inventoryTable.replaceChild(pack, inventoryTable.children[1]);
+    inventoryTable.replaceChild(pack, curPack);
 
 };
 
