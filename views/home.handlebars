@@ -34,8 +34,8 @@
 
               <h6> Name</h6>
             </div>
-            <div class="col">
-              <input class="form-control form-control-lg" type="text" id = "charClass" value="Rogue" disabled>
+            <div id = "charClass" class="col">
+              <input class="form-control form-control-lg" type="text" value="Rogue" disabled>
               <h6> Class</h6>
             </div>
             <div class="col">
@@ -172,8 +172,8 @@
                         </tr>
                       </tbody>
                     </table>
-                    <form id ='addActionForm'>
-                      <div class="row">
+                    <form>
+                      <div id = 'addActionForm1' class="row">
                         <div class="col">
                           <input type="text" class="form-control" placeholder="Name">
                         </div>
@@ -194,6 +194,10 @@
           </div>
         <button type="button" id ="charEdit" class = "btn btn-warning"> Edit</button>
         <button type="button" id ="charSave" class = "btn btn-success" hidden> Save</button>
+        <div>
+          <button type="button" id ="charNew" class = "btn btn-success"> Create new character</button>
+          <button type="button" id ="charNewSave" class = "btn btn-success" hidden> Save new character</button>
+        </div>
         </div>
       </form>
 

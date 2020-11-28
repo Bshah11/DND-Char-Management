@@ -25,6 +25,10 @@ var getCharAction =  'select name, description from action inner JOIN actionclas
 var getCharInventory = 'select damage, effects, name, weight from inventory inner join charinventory on inventory.inventory_id = charinventory.inventory_id WHERE charinventory.character_id =';
 var addInventItem = 'INSERT INTO inventory (name, damage, effects, weight) VALUES ( ?,?,?,?)';
 var connectItemChar = 'INSERT INTO charinventory (inventory_id, character_id) VALUES (?,?)';
+var addAbility = 'INSERT INTO action (name, description) VALUES (?, ?)';
+var AddAbilityClass = 'INSERT INTO actionclass (action_id, class_id) VALUES (?, ?)';
+var getClass = 'SELECT * FROM class';
+var getInvent = 'SELECT * FROM inventory';
 
 app.get('/',function(req,res,next){
     context ={};
@@ -51,6 +55,34 @@ app.post('/readByID', function(req,res, next){
       });
     });
 
+app.post('/addToAbilities', function(req,res, next){
+  console.log('serverside Addto Abilities');
+  context = {};
+  var query = req.body;
+  console.log(query);
+  mysql.pool.query(addAbility, [query.name, query.description], function(err,result){
+    if (err){
+      next(err);
+      return
+    };
+    console.log(result.insertId);
+    mysql.pool.query(AddAbilityClass, [result.insertId, query.classID], function(err, result){
+      if (err){
+        next(err);
+        return
+      }
+      mysql.pool.query(getCharAction + query.classID+";", function(err,result){
+        if(err){
+          next(err);
+          return;
+        }   
+        context.actions = JSON.parse(JSON.stringify(result));
+        res.send(context);
+      })
+    });
+  });
+});
+
 app.post('/addToInventory', function(req, res, next){
   console.log('serverside AddtoInventory');
   context = {};
@@ -74,7 +106,7 @@ app.post('/addToInventory', function(req, res, next){
           return
         };
         context.inventory = JSON.parse(JSON.stringify(result));
-        context.character_id = charID;
+        context.character_id = query.charID;
         res.send(context);
       })
     })
@@ -126,6 +158,27 @@ app.post('/readByName', function(req, res, next){
         })
       }
     });
+
+});
+
+app.get('/getClassInvent', function(req, res, next){
+  console.log('inside class and inventory get');
+  context = {};
+  mysql.pool.query(getClass, function(err,result){
+    if(err){
+      next(err);
+      return
+    }
+    context.classes = JSON.parse(JSON.stringify(result));
+    mysql.pool.query(getInvent, function(err, result){
+      if (err){
+        next(err);
+        return
+      }
+      context.inventory = JSON.parse(JSON.stringify(result));
+      res.send(context);
+    })
+  });
 
 });
 

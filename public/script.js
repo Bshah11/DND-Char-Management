@@ -4,7 +4,6 @@ var abilitiesCard = document.getElementById('abilitiesCard');
 var abilitySwitch = document.getElementById('showAbilties');
 var inventorySwitch = document.getElementById("showInventory");
 var addToInvent = document.getElementById("addInvent");
-var addToAction = document.getElementById("addAction");
 var addForm = document.getElementById("addNewItem");
 var removeInvent = document.getElementsByClassName("btn btn-danger btn-sm");
 var charSavebutton = document.getElementById("charSave");
@@ -17,6 +16,14 @@ var searchType = document.getElementById("searchType");
 var nameChar = document.getElementById("charName");
 var classChar = document.getElementById("charClass");
 var demoChar = document.getElementById('charDemo');
+var addForm = document.getElementById("addInventForm").children
+var addFormAbilities = document.getElementById('addActionForm1');
+var addToAction = document.getElementById('addAction');
+var newCharStart = document.getElementById('charNew');
+var newCharSave = document.getElementById('charNewSave');
+var classAvailable;
+var inventAavailable;
+
 var curCHAR;
 
 
@@ -32,20 +39,64 @@ charEditButton.addEventListener("click", updateChar);
 readByName.addEventListener("click", readName);
 addToInvent.addEventListener("click",addInventForm);
 addToAction.addEventListener("click", addActionForm);
-
+newCharStart.addEventListener("click", addNewChar);
 
 
 // Server Requests
+function addNewChar(e){
+    newCharStart.hidden = true;
+    newCharSave.hidden = false;
+    clearContent();
+    
+};
 
 function addActionForm(e){
     // This function will add a new action to the current class
     console.log("Inside action form client-before");
-    console.log("")
-
+    console.log(addFormAbilities.children[0].firstElementChild.value);
+    console.log(addFormAbilities.children[1].firstElementChild.value);
+    var req = new XMLHttpRequest();
+    var payload = {};
+    payload.name = addFormAbilities.children[0].firstElementChild.value;
+    payload.description = addFormAbilities.children[1].firstElementChild.value;
+    payload.classID = curCHAR.chosen_class_id;
+    payload.charID = curCHAR.character_id;
+    console.log(payload);
+    req.open('POST', '/addToAbilities');
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load', function(){
+        if (req.status >= 200 && req.status < 400){
+            console.log('inside response');
+            var response = JSON.parse(req.responseText)
+            console.log(response.actions);
+            showAbilities(response.actions);
+        } else {
+            console.log("error in network request: " + req.statusText);
+        }});
+    req.send(JSON.stringify(payload));
 };
 
+function classInventpull(){
+    // This function pulls available inventory and classes so the player can create their own char with the information
+    var req = new XMLHttpRequest();
+    var payload = {};
+    req.open('Get', '/getClassInvent');
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load', function(){
+        if (req.status >= 200 && req.status < 400){
+            console.log('inside response');
+            var response = JSON.parse(req.responseText)
+            inventAavailable = response.inventory;
+            classAvailable = response.classes;
+            classSection();
+        } else {
+            console.log("error in network request: " + req.statusText);
+        }});
+    req.send(JSON.stringify(payload));
+
+}
+
 function addInventForm(e){
-    var addForm = document.getElementById("addInventForm").children
     console.log(addForm);
     console.log("name: " + addForm[0].firstElementChild.value);
     var req = new XMLHttpRequest();
@@ -62,7 +113,9 @@ function addInventForm(e){
     req.addEventListener('load', function(){
         if (req.status >= 200 && req.status < 400){
             console.log('inside response');
-            console.log(JSON.parse(req.inventory));
+            var response = JSON.parse(req.responseText)
+            console.log(response.inventory);
+            showCharInven(response.inventory);
         } else {
             console.log("error in network request: " + req.statusText);
         }});
@@ -126,6 +179,8 @@ function showAbilities(actions){
     }
     console.log(classActions);
     abilitiesTable.replaceChild(classActions, curAbilities);
+    addFormAbilities.children[0].firstElementChild.value;
+    addFormAbilities.children[1].firstElementChild.value;
 };
 
 function showCharInven(backpack){
@@ -146,8 +201,11 @@ function showCharInven(backpack){
         var removeItem = curRow.insertCell(4);
         removeItem.innerHTML = '<button type="button" class="btn btn-danger btn-sm">Remove</button>';
         }
-    console.log(pack);
     inventoryTable.replaceChild(pack, curPack);
+    addForm[0].firstElementChild.value = "";
+    addForm[1].firstElementChild.value = "";
+    addForm[2].firstElementChild.value = "";
+    addForm[3].firstElementChild.value = "";
 
 };
 
@@ -166,13 +224,54 @@ function showChar(char){
     console.log(char);
     nameChar.value = char.name;
     demoChar.value = char.chosen_demographic_info;
-    classChar.value = char.chosen_class_id;
+    classChar.children[0].value = char.chosen_class_id;
 };
 
 function createInstance(){
     // PLACEHOLDER
 }
 
+
+// 
+function clearContent(){
+    // clears stat block
+    curNode = statBlock.firstElementChild
+    while (curNode){
+        curNode.children[1].firstElementChild.value = "";
+        curNode = curNode.nextElementSibling;
+    }
+    // clear name and information
+    nameChar.value = "";
+    demoChar.value = "";
+    classChar.children[0].value = "";
+    classInventpull()
+    updateChar();
+
+};
+
+function classSection(){
+    let curClass = [];
+    for (i = 0; i < classAvailable.length; i++){
+        curClass.push(classAvailable[i].name);
+    }
+    var select = document.createElement("select");
+    select.id = "charClass";
+    select.name = "class"
+   
+    for (const val of curClass) {
+      var option = document.createElement("option");
+      option.value = val;
+      option.text = val.charAt(0).toUpperCase() + val.slice(1);
+      select.appendChild(option);
+    }
+   
+    var label = document.createElement("label");
+    label.innerHTML = "Choose your class: "
+    label.htmlFor = "class";
+    console.log(select);
+    classChar.replaceChild(select, classChar.children[0]);
+
+}
 
 for (var i = 0; i < removeInvent.length; i++) 
 {
