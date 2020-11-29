@@ -26,3 +26,18 @@ Fit and Finish
 ** Reflection on Summary
 * Update DMQ and DDQ
  
+
+ We need the ability to edit character object.
+ From the yellow edit button, I think we should do the following.
+ 1. allow the character to update their statistics
+ 2. allow the character Update their name, class, and Race
+ 3. When they update their class, we should return the appropriate ability.
+
+ We need the ability for a player to delete items from their inventory
+ From remove button, Delete relationship between item and character
+ 
+ We need the ability for a player to delete their character.
+ 1. Create a delete Char button.
+ 2. Delete character and associated statistics and other class items.
+
+ 
