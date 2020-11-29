@@ -21,8 +21,8 @@ var addFormAbilities = document.getElementById('addActionForm1');
 var addToAction = document.getElementById('addAction');
 var newCharStart = document.getElementById('charNew');
 var newCharSave = document.getElementById('charNewSave');
-var classAvailable;
-var inventAavailable;
+var classAvailable; // contains all current classes avialble (triggered when a player hit "create new char")
+var inventAavailable; //// contains all current inventory items avialble (triggered when a player hit "create new char")
 
 var curCHAR;
 
@@ -40,15 +40,33 @@ readByName.addEventListener("click", readName);
 addToInvent.addEventListener("click",addInventForm);
 addToAction.addEventListener("click", addActionForm);
 newCharStart.addEventListener("click", addNewChar);
-
+newCharSave.addEventListener("click", saveNewChar);
 
 // Server Requests
 function addNewChar(e){
     newCharStart.hidden = true;
     newCharSave.hidden = false;
     clearContent();
-    
 };
+
+function saveNewChar(){
+    console.log("inside sav Char");
+    var payload = {};
+    payload.name = nameChar.value;
+    payload.class = classChar.firstElementChild.value;
+    payload.demo = demoChar.value;
+    console.log(payload);
+    
+    // collect stats
+    curNode = statBlock.firstElementChild
+    var stats = []
+    while (curNode){
+        stats.push(curNode.children[1].firstElementChild.value);
+        curNode = curNode.nextElementSibling;
+    }
+    payload.stats = stats;
+    console.log(payload);
+}
 
 function addActionForm(e){
     // This function will add a new action to the current class
@@ -138,6 +156,7 @@ function readName(event)
     payload.name = searchName.value;
     payload.type = searchType.value;
     console.log(payload)
+    // REQUEST TO SERVER
     req.open('POST', '/readByName', true);
     req.setRequestHeader('Content-Type', 'application/json');
     req.addEventListener('load', function(){
@@ -260,7 +279,7 @@ function classSection(){
    
     for (const val of curClass) {
       var option = document.createElement("option");
-      option.value = val;
+      option.value = curClass.indexOf(val);
       option.text = val.charAt(0).toUpperCase() + val.slice(1);
       select.appendChild(option);
     }

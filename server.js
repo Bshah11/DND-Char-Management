@@ -119,7 +119,7 @@ app.post('/readByName', function(req, res, next){
     // It will send back the object(s) found
     console.log("serverside getChar")
     context = {};
-    var query = req.body;
+    var query = req.body; // THIS INFORMATION COMES FROM CLIENT SIDE REQ
     var sqlQuery = 'select * from \`' + query.type + '\` where name = \'' + query.name +'\' ;';
     console.log(sqlQuery);
     mysql.pool.query (sqlQuery, function(err, result){
@@ -128,7 +128,7 @@ app.post('/readByName', function(req, res, next){
           return;
       }
       console.log(result);
-      context.result = JSON.parse(JSON.stringify(result));
+      context.result = JSON.parse(JSON.stringify(result)); // Total Char entity from char table
       context.type = query.type;
 
       // Returns full Char information
@@ -139,19 +139,19 @@ app.post('/readByName', function(req, res, next){
             next(err);
             return;
           }   
-          context.statBlock = JSON.parse(JSON.stringify(result));
+          context.statBlock = JSON.parse(JSON.stringify(result)); // char stats
           mysql.pool.query(getCharInventory + String(curChar.character_id) +";" , function(err, result){
             if(err){
               next(err);
               return;
             }   
-            context.inventory = JSON.parse(JSON.stringify(result));
+            context.inventory = JSON.parse(JSON.stringify(result)); // char inventory
             mysql.pool.query(getCharAction + String(curChar.chosen_class_id)+";", function(err,result){
               if(err){
                 next(err);
                 return;
               }   
-              context.actions = JSON.parse(JSON.stringify(result));
+              context.actions = JSON.parse(JSON.stringify(result)); // char class actions.
               res.send(context);
             })
           })

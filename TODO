@@ -1,22 +1,28 @@
 Create
 * Create new Character (will flow into create new stat)
 * Create class needed still
+* Create new stat
 
 Read
 * How are we presenting avilable classes, actions, and inventory
+** SELECT * on appropriate table and show results somewhere.
 
 Update 
+* One update required
 * Updating Char and Stats via the update button
 * No updates for individual inventory or class actions
 
 
 Delete
+* one Del required
 * del should be fairly straight-forward
 * del Char should cascade into stats, inventory
 * cannot del Stats directly
+
 
 Fit and Finish
 * Source Code commenting
 * Executive Summary
 ** Reflection on Summary
 * Update DMQ and DDQ
+ 
