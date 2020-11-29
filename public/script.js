@@ -51,21 +51,36 @@ function addNewChar(e){
 
 function saveNewChar(){
     console.log("inside sav Char");
+    var req = new XMLHttpRequest();
     var payload = {};
     payload.name = nameChar.value;
-    payload.class = classChar.firstElementChild.value;
+    payload.class = parseInt(classChar.firstElementChild.value);
     payload.demo = demoChar.value;
-    console.log(payload);
-    
     // collect stats
     curNode = statBlock.firstElementChild
-    var stats = []
+    var stats = [];
     while (curNode){
-        stats.push(curNode.children[1].firstElementChild.value);
+        stats.push(parseInt(curNode.children[1].firstElementChild.value)+1);
         curNode = curNode.nextElementSibling;
     }
     payload.stats = stats;
     console.log(payload);
+    req.open('POST', '/addNewChar');
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load', function(){
+        if (req.status >= 200 && req.status < 400){
+            console.log('inside response');
+            var response = JSON.parse(req.responseText)
+            curCHAR = response.char;
+            showAbilities(response.actions);
+            saveChar();
+            newCharStart.hidden = false;
+            newCharSave.hidden = true;
+        } else {
+            console.log("error in network request: " + req.statusText);
+        }});
+    console.log(payload);
+    req.send(JSON.stringify(payload));
 }
 
 function addActionForm(e){
@@ -88,6 +103,7 @@ function addActionForm(e){
             var response = JSON.parse(req.responseText)
             console.log(response.actions);
             showAbilities(response.actions);
+
         } else {
             console.log("error in network request: " + req.statusText);
         }});
@@ -140,7 +156,6 @@ function addInventForm(e){
     req.send(JSON.stringify(payload));
     
 };
-
 
 
 function readName(event)

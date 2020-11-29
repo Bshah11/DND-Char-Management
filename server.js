@@ -29,12 +29,51 @@ var addAbility = 'INSERT INTO action (name, description) VALUES (?, ?)';
 var AddAbilityClass = 'INSERT INTO actionclass (action_id, class_id) VALUES (?, ?)';
 var getClass = 'SELECT * FROM class';
 var getInvent = 'SELECT * FROM inventory';
+var addStat = 'INSERT INTO statistic (strength, dexterity, constitution, intelligence, wisdom, charisma) VALUES (?, ?, ?, ?, ?, ?)';
+var addChar = 'INSERT INTO \`character\` (name, chosen_class_id, stat_id, chosen_demographic_info) VALUES (?, ?, ?, ?)';
+var getCharById = 'SELECT * FROM \`character`\ WHERE character_id = ';
+
 
 app.get('/',function(req,res,next){
     context ={};
     res.render('home', context);
     });
 
+
+app.post('/addNewChar', function(req,res, next){
+    console.log("inside addNewChar ");
+    context = {};
+    var query = req.body;
+    console.log(query);
+    mysql.pool.query(addStat,query.stats, function(err, result){ // creates stat
+      if(err){
+        next(err);
+        return
+      }
+      // result.insertId is ID of stat just created
+      console.log(addChar, [query.name, String(query.class), String(result.insertId), query.demo])
+      mysql.pool.query(addChar, [query.name, String(query.class), String(result.insertId), query.demo], function(err, result){ // create Char
+
+        let charID = result.insertId;
+        mysql.pool.query(getCharAction + String(query.class)+";", function(err, result){ // grabs actions
+          if(err){
+            next(err);
+            return
+          }
+          context.actions = JSON.parse(JSON.stringify(result));
+          console.log(getCharById, [String(charID)]);
+          mysql.pool.query(getCharById +String(charID), function(err,result){
+            if (err){
+              next(err);
+              return
+            }
+            context.char = JSON.parse(JSON.stringify(result));
+            res.send(context);
+          })
+        })
+      })
+    })
+});
 
 
 //POST - passing data via body of req
