@@ -3,6 +3,7 @@ var abilitiesTable = document.getElementById('abilitiesTable');
 var abilitiesCard = document.getElementById('abilitiesCard');
 var abilitySwitch = document.getElementById('showAbilties');
 var inventorySwitch = document.getElementById("showInventory");
+var removeInventory = document.getElementsByClassName("btn btn-danger btn-sm");
 var addToInvent = document.getElementById("addInvent");
 var addForm = document.getElementById("addNewItem");
 var removeInvent = document.getElementsByClassName("btn btn-danger btn-sm");
@@ -36,13 +37,45 @@ var curCHAR;
 abilitySwitch.addEventListener("click", function() {changeCard(1)});
 inventorySwitch.addEventListener("click", function() {changeCard(0)});
 charEditButton.addEventListener("click", updateChar);
+charSavebutton.addEventListener("click", saveChar);
 readByName.addEventListener("click", readName);
 addToInvent.addEventListener("click",addInventForm);
 addToAction.addEventListener("click", addActionForm);
 newCharStart.addEventListener("click", addNewChar);
 newCharSave.addEventListener("click", saveNewChar);
 
+
+function removeItemDB(e){
+    console.log('inside remove itemBD');
+    console.log(e.target); // remove button element
+    // inventAavailable current full pull of inventory table including IDs
+    // find a way to figure out the iventory id from the target
+    // send the request to the DB
+    var payload = {};
+    payload.charID = curCHAR.character_id;
+    payload.inventorID = ""; // figure out with inventAvailable
+    var req = new XMLHttpRequest();
+    req.open('POST', '/delItem');
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load', function(){
+        if (req.status >= 200 && req.status < 400){
+            console.log('inside response');
+            var response = JSON.parse(req.responseText);
+        } else {
+            console.log("error in network request: " + req.statusText);
+        }});
+    console.log(payload);
+    req.send(JSON.stringify(payload));
+
+
+
+}
+
 // Server Requests
+function saveChar(e){
+    // Takes in updated fields and saves to DB.
+}
+
 function addNewChar(e){
     newCharStart.hidden = true;
     newCharSave.hidden = false;
@@ -60,7 +93,7 @@ function saveNewChar(){
     curNode = statBlock.firstElementChild
     var stats = [];
     while (curNode){
-        stats.push(parseInt(curNode.children[1].firstElementChild.value)+1);
+        stats.push(parseInt(curNode.children[1].firstElementChild.value));
         curNode = curNode.nextElementSibling;
     }
     payload.stats = stats;
@@ -163,7 +196,7 @@ function readName(event)
     // This is the read functionality of our code base driven by the search bar
     // This takes in a entity type and a search string and return object IF name is found.
     // Question: How do we handle multiple returns?
-
+    classInventpull();
     event.preventDefault();
     console.log("inside readByName");
     var req = new XMLHttpRequest();
@@ -236,6 +269,13 @@ function showCharInven(backpack){
         removeItem.innerHTML = '<button type="button" class="btn btn-danger btn-sm">Remove</button>';
         }
     inventoryTable.replaceChild(pack, curPack);
+    var elements = document.getElementsByClassName("btn btn-danger btn-sm");
+    console.log(elements);
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].addEventListener("click", removeItemDB);
+    }
+    
+
     addForm[0].firstElementChild.value = "";
     addForm[1].firstElementChild.value = "";
     addForm[2].firstElementChild.value = "";
@@ -278,12 +318,13 @@ function clearContent(){
     nameChar.value = "";
     demoChar.value = "";
     classChar.children[0].value = "";
-    classInventpull()
+    classInventpull();
     updateChar();
 
 };
 
 function classSection(){
+    // Creates selector for classes
     let curClass = [];
     for (i = 0; i < classAvailable.length; i++){
         curClass.push(classAvailable[i].name);
@@ -294,7 +335,7 @@ function classSection(){
    
     for (const val of curClass) {
       var option = document.createElement("option");
-      option.value = curClass.indexOf(val);
+      option.value = curClass.indexOf(val) + 1;
       option.text = val.charAt(0).toUpperCase() + val.slice(1);
       select.appendChild(option);
     }
@@ -316,6 +357,7 @@ charSavebutton.addEventListener('click', saveChar);
 
 function saveChar(event)
 {
+    // for current Char, updates char based on attributes changes
     for (var i = 0; i < statBlock.children.length; i++){
         statBlock.children[i].children[1].firstElementChild.disabled = true;
     }
@@ -325,6 +367,46 @@ function saveChar(event)
     }
     charSavebutton.hidden = true;
     charEditButton.hidden = false;
+    console.log("Inside save char for send to DB");
+    // for Char, grab name, classID, demo
+    console.log(nameChar.value); // name
+    console.log(classChar.firstElementChild.value); // classID
+    console.log(demoChar.value); // demo info
+    console.log(curCHAR.stat_id); // stat id
+    // collect stats
+    curNode = statBlock.firstElementChild
+    var stats = [];
+    while (curNode){
+        stats.push(parseInt(curNode.children[1].firstElementChild.value));
+        curNode = curNode.nextElementSibling;
+    }
+    console.log(stats); // current stats
+    var req = new XMLHttpRequest();
+    var payload = {};
+    payload.name = nameChar.value;
+    payload.classID = classChar.firstElementChild.value;
+    payload.demo = demoChar.value;
+    payload.statID = curCHAR.stat_id;
+    payload.stats = stats;
+    payload.charID = curCHAR.character_id;
+    console.log(payload);
+
+    
+    req.open('POST', '/updateChar', true); // Where are we going
+    req.setRequestHeader('Content-Type', 'application/json'); // what kind of info are we sending
+    req.addEventListener('load', function(){ // what do we do when we get a response from the server
+        if(req.status >= 200 && req.status < 400){
+            console.log("inside response")
+            var response = JSON.parse(req.responseText);
+            console.log(response);
+            showAbilities(response.actions);
+          } else {
+            console.log("Error in network request: " + req.statusText);
+          }});
+    req.send(JSON.stringify(payload));
+    
+
+
 
 }
 
@@ -340,6 +422,7 @@ function updateChar(event)
     }
     charSavebutton.hidden = false;
     charEditButton.hidden = true;
+    classInventpull(); // Changes the selector for class
 
 }
 

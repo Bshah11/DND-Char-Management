@@ -32,13 +32,44 @@ var getInvent = 'SELECT * FROM inventory';
 var addStat = 'INSERT INTO statistic (strength, dexterity, constitution, intelligence, wisdom, charisma) VALUES (?, ?, ?, ?, ?, ?)';
 var addChar = 'INSERT INTO \`character\` (name, chosen_class_id, stat_id, chosen_demographic_info) VALUES (?, ?, ?, ?)';
 var getCharById = 'SELECT * FROM \`character`\ WHERE character_id = ';
-
+var updatCharById = 'UPDATE \`character\` SET name = ?, chosen_class_id = ?, chosen_demographic_info = ? WHERE character_id = ?;'
+var updateStatbyID  = 'UPDATE \`statistic\` SET strength = ?, dexterity = ?, constitution = ?, intelligence = ?, wisdom = ?, charisma = ? WHERE stat_id = ?;'
 
 app.get('/',function(req,res,next){
     context ={};
     res.render('home', context);
     });
 
+app.post('/updateChar', function(req,res,next){
+  console.log("inside updateChar");
+  context = {}; // the container for everything we send back
+  var query = req.body //
+  console.log(query);
+  mysql.pool.query(updatCharById, [query.name, String(query.classID), query.demo, query.charID], function(err, result){
+    if(err){
+      next(err);
+      return
+    }
+    console.log('update char name/demo/class Successful!');
+    mysql.pool.query(updateStatbyID, [String(query.stats[0]), String(query.stats[1]), String(query.stats[2]), String(query.stats[3]), String(query.stats[4]), String(query.stats[5]), String(query.statID)], function(err,result){
+      if(err){
+        next(err);
+        return
+      }
+      console.log("update stat successful");
+      mysql.pool.query(getCharAction + String(query.classID)+";", function(err, result){
+        if(err){
+          next(err);
+          return
+        }
+        console.log("get actions successful");
+        context.actions = JSON.parse(JSON.stringify(result));
+        res.send(context);
+      })
+    })
+  });
+
+});
 
 app.post('/addNewChar', function(req,res, next){
     console.log("inside addNewChar ");
@@ -200,6 +231,11 @@ app.post('/readByName', function(req, res, next){
 
 });
 
+app.post('/delItem', function (req, res, next){
+  console.log("inside delItem");
+  var context = {};
+  var query =req.body;
+});
 app.get('/getClassInvent', function(req, res, next){
   console.log('inside class and inventory get');
   context = {};
