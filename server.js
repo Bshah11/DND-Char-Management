@@ -5,6 +5,7 @@ var app = express();
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 
 var bodyParser = require('body-parser');
+const { resolveNaptr } = require('dns');
 
 
 
@@ -24,16 +25,21 @@ var getStatID = 'SELECT * FROM \`statistic\` WHERE stat_id= ';
 var getCharAction =  'select name, description from action inner JOIN actionclass on actionclass.action_id = action.action_id where actionclass.class_id =';
 var getCharInventory = 'select damage, effects, name, weight from inventory inner join charinventory on inventory.inventory_id = charinventory.inventory_id WHERE charinventory.character_id =';
 var addInventItem = 'INSERT INTO inventory (name, damage, effects, weight) VALUES ( ?,?,?,?)';
-var connectItemChar = 'INSERT INTO charinventory (inventory_id, character_id) VALUES (?,?)';
+var addInventoryChar = 'INSERT INTO charinventory (inventory_id, character_id) VALUES (?,?)';
 var addAbility = 'INSERT INTO action (name, description) VALUES (?, ?)';
 var AddAbilityClass = 'INSERT INTO actionclass (action_id, class_id) VALUES (?, ?)';
 var getClass = 'SELECT * FROM class';
 var getInvent = 'SELECT * FROM inventory';
+var getAction = 'SELECT * FROM action';
 var addStat = 'INSERT INTO statistic (strength, dexterity, constitution, intelligence, wisdom, charisma) VALUES (?, ?, ?, ?, ?, ?)';
 var addChar = 'INSERT INTO \`character\` (name, chosen_class_id, stat_id, chosen_demographic_info) VALUES (?, ?, ?, ?)';
 var getCharById = 'SELECT * FROM \`character`\ WHERE character_id = ';
 var updatCharById = 'UPDATE \`character\` SET name = ?, chosen_class_id = ?, chosen_demographic_info = ? WHERE character_id = ?;'
 var updateStatbyID  = 'UPDATE \`statistic\` SET strength = ?, dexterity = ?, constitution = ?, intelligence = ?, wisdom = ?, charisma = ? WHERE stat_id = ?;'
+var addClass = 'INSERT INTO \`class\` (name, hit_points) VALUES (?, ?)';
+var addAction = 'INSERT INTO \`action\` (name, description) VALUES (?, ?)'
+var addClassAction = 'INSERT IGNORE INTO \`actionclass\` (action_id, class_id) VALUES (?,?)'
+
 
 app.get('/',function(req,res,next){
     context ={};
@@ -153,6 +159,7 @@ app.post('/addToAbilities', function(req,res, next){
   });
 });
 
+
 app.post('/addToInventory', function(req, res, next){
   console.log('serverside AddtoInventory');
   context = {};
@@ -164,7 +171,7 @@ app.post('/addToInventory', function(req, res, next){
       return
     };
     console.log(result.insertId);
-    mysql.pool.query(connectItemChar,[result.insertId, query.charID], function(err, result){
+    mysql.pool.query(addInventoryChar,[result.insertId, query.charID], function(err, result){
       if (err){
         next(err);
         return
@@ -230,12 +237,78 @@ app.post('/readByName', function(req, res, next){
     });
 
 });
-
+// Delete item
 app.post('/delItem', function (req, res, next){
   console.log("inside delItem");
   var context = {};
   var query =req.body;
 });
+
+app.post('/addNewClass', function (req, res, next){
+  console.log('inside addNewClass');
+  var context = {};
+  var query =  req.body;
+  console.log(query.name);
+  console.log(query.hp);
+  mysql.pool.query(addClass,[query.name, query.hp], function(err,result){
+    if (err){
+      next(err);
+      return
+    }
+    console.log(result.insertId);
+    res.send(context);
+  })
+});
+
+app.post('/addNewInventory', function (req, res, next){
+  console.log('serverside addNewInventory');
+  context = {};
+  var query = req.body;
+  console.log(query);
+  mysql.pool.query(addInventItem , [query.name, query.damage, query.effect, query.weight], function(err, result){
+    if (err){
+      next(err)
+      return
+    }
+    console.log(result.insertId);
+    res.send(context);
+  })
+});
+
+app.post('/addNewAction', function (req, res, next){
+  console.log('inside addNewAction');
+  var context = {};
+  var query =  req.body;
+  console.log(query.name);
+  console.log(query.description);
+  mysql.pool.query(addAction, [query.name, query.description], function(err, result){
+    if (err){
+      next(err);
+      return
+    }
+    console.log(result.insertId);
+    res.send(context);
+  })
+});
+
+// M:M mappers
+
+app.post('/mapActionCLass', function(req,res, next){
+  console.log('inside mapactionclass');
+  var context = {};
+  var query = req.body;
+  console.log(query);
+  mysql.pool.query(addClassAction, [query.actionID, query.classID], function(err, result){
+    if(err){
+      next(err)
+      return
+    }
+    console.log(result.insertId);
+    res.send(context);
+  })
+});
+
+
 app.get('/getClassInvent', function(req, res, next){
   console.log('inside class and inventory get');
   context = {};
@@ -251,7 +324,14 @@ app.get('/getClassInvent', function(req, res, next){
         return
       }
       context.inventory = JSON.parse(JSON.stringify(result));
-      res.send(context);
+      mysql.pool.query(getAction, function(err, result){
+        if (err){
+          next(err);
+          return
+        }
+        context.actions = JSON.parse(JSON.stringify(result));
+        res.send(context);
+      })
     })
   });
 

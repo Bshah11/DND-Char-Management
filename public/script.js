@@ -24,7 +24,15 @@ var newCharStart = document.getElementById('charNew');
 var newCharSave = document.getElementById('charNewSave');
 var classAvailable; // contains all current classes avialble (triggered when a player hit "create new char")
 var inventAavailable; //// contains all current inventory items avialble (triggered when a player hit "create new char")
-
+var actionAvailable;
+var newClassStart = document.getElementById('classNew');
+var newClassSave = document.getElementById("classNewSave");
+var newActionStart = document.getElementById('actionNew');
+var newActionSave = document.getElementById('actionNewSave');
+var newInventoryStart = document.getElementById('inventNewStart');
+var newIntenvorySave=  document.getElementById('inventoryNewSave');
+var actionclassMapStart =document.getElementById('actionclassMapStart')
+var actionclassMapSave = document.getElementById('actionclassMapSave');
 var curCHAR;
 
 
@@ -39,10 +47,22 @@ inventorySwitch.addEventListener("click", function() {changeCard(0)});
 charEditButton.addEventListener("click", updateChar);
 charSavebutton.addEventListener("click", saveChar);
 readByName.addEventListener("click", readName);
-addToInvent.addEventListener("click",addInventForm);
+//addToInvent.addEventListener("click",addInventForm);
 addToAction.addEventListener("click", addActionForm);
 newCharStart.addEventListener("click", addNewChar);
 newCharSave.addEventListener("click", saveNewChar);
+newClassStart.addEventListener("click", addNewClass);
+newClassSave.addEventListener("click", saveNewClass);
+newActionStart.addEventListener('click', addNewAction);
+newActionSave.addEventListener('click', saveNewAction);
+newInventoryStart.addEventListener('click', addNewInventory);
+newIntenvorySave.addEventListener('click', saveNewInventory);
+actionclassMapStart.addEventListener('click', openactionMapper);
+actionclassMapSave.addEventListener('click', saveactionMapper);
+
+document.addEventListener("DOMContentLoaded", function() {
+    classInventpull()
+  });
 
 
 function removeItemDB(e){
@@ -53,7 +73,7 @@ function removeItemDB(e){
     // send the request to the DB
     var payload = {};
     payload.charID = curCHAR.character_id;
-    payload.inventorID = ""; // figure out with inventAvailable
+    payload.inventID = ""; // figure out with inventAvailable
     var req = new XMLHttpRequest();
     req.open('POST', '/delItem');
     req.setRequestHeader('Content-Type', 'application/json');
@@ -72,15 +92,14 @@ function removeItemDB(e){
 }
 
 // Server Requests
-function saveChar(e){
-    // Takes in updated fields and saves to DB.
-}
 
 function addNewChar(e){
     newCharStart.hidden = true;
     newCharSave.hidden = false;
     clearContent();
+    classSection();
 };
+
 
 function saveNewChar(){
     console.log("inside sav Char");
@@ -155,7 +174,7 @@ function classInventpull(){
             var response = JSON.parse(req.responseText)
             inventAavailable = response.inventory;
             classAvailable = response.classes;
-            classSection();
+            actionAvailable = response.actions;
         } else {
             console.log("error in network request: " + req.statusText);
         }});
@@ -231,6 +250,167 @@ function readName(event)
     console.log("back to clientside")
 
 };
+
+function addNewInventory(e){
+    newInventoryStart.hidden = true;
+    document.getElementById('addInventHolder').hidden = false;
+}
+
+function saveNewInventory(e){
+    console.log('inside saveNewInventory');
+    var payload = {};
+    var req = new XMLHttpRequest();
+    payload.name = addForm[0].firstElementChild.value;
+    payload.damage = addForm[1].firstElementChild.value;
+    payload.effect = addForm[2].firstElementChild.value;
+    payload.weight = addForm[3].firstElementChild.value;
+    console.log(payload);
+    req.open('POST', '/addNewInventory', true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load', function(){
+        if(req.status >= 200 && req.status < 400){
+            console.log("inside response")
+            var response = JSON.parse(req.responseText)
+            newInventoryStart.hidden = false;
+            document.getElementById('addInventHolder').hidden = true;
+          } else {
+            console.log("Error in network request: " + req.statusText);
+          }});
+    req.send(JSON.stringify(payload));
+    console.log("back to clientside")
+    
+}
+
+function addNewAction(e){
+    newActionStart.hidden = true;
+    document.getElementById('actionNewForm').hidden = false;
+}
+
+function saveNewAction(e){
+    console.log('inside saveNewAction');
+    var req = new XMLHttpRequest();
+    var payload = {};
+    payload.name = document.getElementById('newActionName').value
+    payload.description = document.getElementById('newActionDescription').value
+    console.log(payload);
+    req.open('POST', '/addNewAction', true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load', function(){
+        if(req.status >= 200 && req.status < 400){
+            console.log("inside response")
+            var response = JSON.parse(req.responseText)
+            newActionStart.hidden = false;
+            document.getElementById('actionNewForm').hidden = true;
+          } else {
+            console.log("Error in network request: " + req.statusText);
+          }});
+    req.send(JSON.stringify(payload));
+    console.log("back to clientside")
+
+}
+
+function addNewClass(e){
+    newClassStart.hidden = true;
+    document.getElementById('classNewForm').hidden = false;
+
+};
+
+function saveNewClass(e){
+    console.log("inside saveNewClass");
+    var req = new XMLHttpRequest();
+    var payload = {};
+    payload.name = document.getElementById('newClassName').value;
+    payload.hp = document.getElementById('newClassHP').value
+    console.log(payload); 
+    req.open('POST', '/addNewClass', true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load', function(){
+        if(req.status >= 200 && req.status < 400){
+            console.log("inside response")
+            var response = JSON.parse(req.responseText)
+            newClassStart.hidden = false;
+            document.getElementById('classNewForm').hidden = true;
+          } else {
+            console.log("Error in network request: " + req.statusText);
+          }});
+    req.send(JSON.stringify(payload));
+    console.log("back to clientside")
+}
+
+
+function openactionMapper(e){
+    actionclassMapStart.hidden = true;
+    document.getElementById('addActionClass').hidden = false;
+    actionclassMapSave.hidden = false;
+    createActionMap();
+    }
+
+function createActionMap(){
+    
+    // ADD dropdown for actions
+    var select = document.createElement("select");
+    select.id = "actionToMap";
+    select.name = "action"
+
+   
+    for (i = 0; i < actionAvailable.length; i++) {
+      var option = document.createElement("option");
+      option.value = actionAvailable[i].action_id;
+      option.text = actionAvailable[i].name;
+      select.appendChild(option);
+    }
+   
+    var label = document.createElement("label");
+    label.innerHTML = "Chose Action: "
+    label.htmlFor = "action";
+    console.log(select);
+    document.getElementById('addActionClass').appendChild(select);
+    
+    // ADD dropdown for classes
+    select = document.createElement("select");
+    select.id = "classToMap";
+    select.name = "class"
+
+   
+    for (i = 0; i < classAvailable.length; i++) {
+      var option = document.createElement("option");
+      option.value = classAvailable[i].class_id;
+      option.text = classAvailable[i].name;
+      select.appendChild(option);
+    }
+   
+    var label = document.createElement("label");
+    label.innerHTML = "Chose Class: "
+    label.htmlFor = "class";
+    console.log(select);
+    document.getElementById('addActionClass').appendChild(select);
+
+
+}
+
+function saveactionMapper(e){
+    console.log("inside saveactionMapper");
+    var payload = {};
+    payload.classID = String(document.getElementById('classToMap').value);
+    payload.actionID = String(document.getElementById('actionToMap').value);
+    var req = new XMLHttpRequest();
+    req.open('POST', '/mapActionCLass', true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load', function(){
+        if(req.status >= 200 && req.status < 400){
+            console.log("inside response")
+            var response = JSON.parse(req.responseText)
+            actionclassMapStart.hidden = false;
+            document.getElementById('addActionClass').innerHTML = "";
+            document.getElementById('addActionClass').hidden = true;
+            actionclassMapSave.hidden = true;
+          } else {
+            console.log("Error in network request: " + req.statusText);
+          }});
+    req.send(JSON.stringify(payload));
+    console.log("back to clientside")
+
+}
 
 function showAbilities(actions){
     var curAbilities = document.getElementById("abilitiesTable").children[1];
