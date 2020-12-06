@@ -31,8 +31,10 @@ var newActionStart = document.getElementById('actionNew');
 var newActionSave = document.getElementById('actionNewSave');
 var newInventoryStart = document.getElementById('inventNewStart');
 var newIntenvorySave=  document.getElementById('inventoryNewSave');
-var actionclassMapStart =document.getElementById('actionclassMapStart')
+var actionclassMapStart =document.getElementById('actionclassMapStart');
 var actionclassMapSave = document.getElementById('actionclassMapSave');
+var charIventMapStart =  document.getElementById('charInventMapStart');
+var charIventMapSave =  document.getElementById('charInventMapSave');
 var curCHAR;
 
 
@@ -48,7 +50,7 @@ charEditButton.addEventListener("click", updateChar);
 charSavebutton.addEventListener("click", saveChar);
 readByName.addEventListener("click", readName);
 //addToInvent.addEventListener("click",addInventForm);
-addToAction.addEventListener("click", addActionForm);
+//addToAction.addEventListener("click", addActionForm);
 newCharStart.addEventListener("click", addNewChar);
 newCharSave.addEventListener("click", saveNewChar);
 newClassStart.addEventListener("click", addNewClass);
@@ -59,6 +61,9 @@ newInventoryStart.addEventListener('click', addNewInventory);
 newIntenvorySave.addEventListener('click', saveNewInventory);
 actionclassMapStart.addEventListener('click', openactionMapper);
 actionclassMapSave.addEventListener('click', saveactionMapper);
+charIventMapStart.addEventListener('click', openinventMapper)
+charIventMapSave.addEventListener('click',  saveinventMapper)
+
 
 document.addEventListener("DOMContentLoaded", function() {
     classInventpull()
@@ -67,13 +72,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function removeItemDB(e){
     console.log('inside remove itemBD');
-    console.log(e.target); // remove button element
+    var inventoryObject = e.target.parentElement.parentElement.children; 
+    var parNode = e.target.parentElement.parentElement.parentElement;
+    console.log(parNode);
+    // remove button element
     // inventAavailable current full pull of inventory table including IDs
     // find a way to figure out the iventory id from the target
     // send the request to the DB
     var payload = {};
-    payload.charID = curCHAR.character_id;
-    payload.inventID = ""; // figure out with inventAvailable
+    payload.charID = String(curCHAR.character_id);
+    payload.inventoryID = String(findInventID(inventoryObject[0].innerText));
     var req = new XMLHttpRequest();
     req.open('POST', '/delItem');
     req.setRequestHeader('Content-Type', 'application/json');
@@ -81,14 +89,20 @@ function removeItemDB(e){
         if (req.status >= 200 && req.status < 400){
             console.log('inside response');
             var response = JSON.parse(req.responseText);
+            document.getElementById('inventoryPack').removeChild(e.target.parentElement.parentElement)
         } else {
             console.log("error in network request: " + req.statusText);
         }});
     console.log(payload);
     req.send(JSON.stringify(payload));
+}
 
-
-
+function findInventID(nameInvent){
+    for (let key in inventAavailable){
+        if (inventAavailable[key].name == nameInvent){
+            return inventAavailable[key].inventory_id
+        }
+    }
 }
 
 // Server Requests
@@ -181,7 +195,7 @@ function classInventpull(){
     req.send(JSON.stringify(payload));
 
 }
-
+/*
 function addInventForm(e){
     console.log(addForm);
     console.log("name: " + addForm[0].firstElementChild.value);
@@ -208,7 +222,7 @@ function addInventForm(e){
     req.send(JSON.stringify(payload));
     
 };
-
+*/
 
 function readName(event)
 {
@@ -218,6 +232,20 @@ function readName(event)
     classInventpull();
     event.preventDefault();
     console.log("inside readByName");
+
+    // Locks fields if user accidently accesses this button after opening edit
+    for (var i = 0; i < statBlock.children.length; i++){
+        statBlock.children[i].children[1].firstElementChild.disabled = true;
+    }
+    for (var i = 0; i < charNamePlus.children.length; i ++){
+        currentNode = charNamePlus.children[i].firstElementChild;
+        currentNode.disabled = true;
+    }
+
+    charSavebutton.hidden = true;
+    charEditButton.hidden = false;
+
+
     var req = new XMLHttpRequest();
     var payload = {};
     payload.name = searchName.value;
@@ -242,6 +270,7 @@ function readName(event)
                 showStat(response.statBlock);
                 showCharInven(response.inventory);
                 showAbilities(response.actions);
+                classInventpull();
             }
           } else {
             console.log("Error in network request: " + req.statusText);
@@ -273,6 +302,7 @@ function saveNewInventory(e){
             var response = JSON.parse(req.responseText)
             newInventoryStart.hidden = false;
             document.getElementById('addInventHolder').hidden = true;
+            classInventpull();
           } else {
             console.log("Error in network request: " + req.statusText);
           }});
@@ -301,6 +331,7 @@ function saveNewAction(e){
             var response = JSON.parse(req.responseText)
             newActionStart.hidden = false;
             document.getElementById('actionNewForm').hidden = true;
+            classInventpull();
           } else {
             console.log("Error in network request: " + req.statusText);
           }});
@@ -330,6 +361,7 @@ function saveNewClass(e){
             var response = JSON.parse(req.responseText)
             newClassStart.hidden = false;
             document.getElementById('classNewForm').hidden = true;
+            classInventpull();
           } else {
             console.log("Error in network request: " + req.statusText);
           }});
@@ -337,6 +369,57 @@ function saveNewClass(e){
     console.log("back to clientside")
 }
 
+function openinventMapper(e){
+    charIventMapStart.hidden = true;
+    document.getElementById('addInventoryChar').hidden = false;
+    charIventMapSave.hidden = false;
+    createInventoryMap();
+}
+
+function createInventoryMap(){
+    var select = document.createElement("select");
+    select.id = "InventToMap";
+    select.name = "invent"
+
+   
+    for (i = 0; i < inventAavailable.length; i++) {
+      var option = document.createElement("option");
+      option.value = inventAavailable[i].inventory_id;
+      option.text = inventAavailable[i].name;
+      select.appendChild(option);
+    }
+   
+    var label = document.createElement("label");
+    label.innerHTML = "Chose Item: "
+    label.htmlFor = "invent";
+    console.log(select);
+    document.getElementById('addInventoryChar').appendChild(select);
+}
+
+function saveinventMapper(e){
+    console.log("inside saveinventMapper");
+    var payload = {};
+    payload.inventoryID = document.getElementById('InventToMap').value;
+    payload.charID = String(curCHAR.character_id);
+    var req = new XMLHttpRequest();
+    req.open('POST', '/mapCharInvent', true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load', function(){
+        if(req.status >= 200 && req.status < 400){
+            console.log("inside response")
+            var response = JSON.parse(req.responseText)
+            charIventMapStart.hidden = false;
+            document.getElementById('addInventoryChar').innerHTML = "";
+            document.getElementById('addInventoryChar').hidden = true;
+            charIventMapSave.hidden = true;
+            showCharInven(response.inventory);
+          } else {
+            console.log("Error in network request: " + req.statusText);
+          }});
+    req.send(JSON.stringify(payload));
+    console.log("back to clientside")
+
+}
 
 function openactionMapper(e){
     actionclassMapStart.hidden = true;
@@ -404,6 +487,7 @@ function saveactionMapper(e){
             document.getElementById('addActionClass').innerHTML = "";
             document.getElementById('addActionClass').hidden = true;
             actionclassMapSave.hidden = true;
+            showAbilities(response)
           } else {
             console.log("Error in network request: " + req.statusText);
           }});
@@ -426,14 +510,14 @@ function showAbilities(actions){
     }
     console.log(classActions);
     abilitiesTable.replaceChild(classActions, curAbilities);
-    addFormAbilities.children[0].firstElementChild.value;
-    addFormAbilities.children[1].firstElementChild.value;
 };
 
 function showCharInven(backpack){
     console.log(backpack);
     var curPack = inventoryTable.children[1];
     pack = document.createElement("TBODY");
+    pack.setAttribute("id", "inventoryPack");
+
     for(item in backpack){
         curItem = backpack[item];
         var curRow = pack.insertRow(0)
@@ -455,12 +539,12 @@ function showCharInven(backpack){
         elements[i].addEventListener("click", removeItemDB);
     }
     
-
+    /*
     addForm[0].firstElementChild.value = "";
     addForm[1].firstElementChild.value = "";
     addForm[2].firstElementChild.value = "";
     addForm[3].firstElementChild.value = "";
-
+    */
 };
 
 function showStat(stats){
@@ -603,6 +687,7 @@ function updateChar(event)
     charSavebutton.hidden = false;
     charEditButton.hidden = true;
     classInventpull(); // Changes the selector for class
+    classSection();
 
 }
 

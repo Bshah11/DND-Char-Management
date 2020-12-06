@@ -27,7 +27,7 @@
         <p></p>
       </div>
       <form>
-        <div class="container">
+        <div id='CharSheet' class="container">
           <div class="row" id = 'charNamePlus'>
             <div class="col">
               <input class="form-control form-control-lg" type="text" id = "charName" value="Frodo" disabled>
@@ -44,7 +44,7 @@
             </div>
           </div>
         </di>
-        <div class="container">
+        <div class="container" id = 'charSheetDetails'>
           <div class="row">
             <div class="col-3">
               <table class="table-responsive-sm">
@@ -131,6 +131,13 @@
                         </tr>                     
                       </tbody>
                     </table> 
+                    <div>
+                      <button type="button" id ="charInventMapStart" class = "btn btn-success"> Add Inventory to Character</button>
+                      <div>
+                        <div id='addInventoryChar' hidden></div>
+                      </div>
+                      <button type="button" id ="charInventMapSave" class = "btn btn-success" hidden>Save</button>
+                    </div>
                   </div>
                 </div>
                 <div class="card" id = "abilitiesCard" hidden>
@@ -151,18 +158,10 @@
                         </tr>
                       </tbody>
                     </table>
-                    <form>
-                      <div id = 'addActionForm1' class="row">
-                        <div class="col">
-                          <input type="text" class="form-control" placeholder="Name">
-                        </div>
-                        <div class="col">
-                          <input type="text" class="form-control" placeholder="Description">
-                        </div>
-                      </div>
+                    <form id = 'addInventChar' hidden >
                       <div class = "row">
                         <div class = "col">
-                          <button type = "button" class="btn btn-success" id = 'addAction'>Add new Action</button>
+                          <button hidden type = "button" class="btn btn-success" id = 'addAction'>Add new Action</button>
                         </div>
                       </div>
                     </form>
@@ -173,11 +172,12 @@
           </div>
         <button type="button" id ="charEdit" class = "btn btn-warning"> Edit</button>
         <button type="button" id ="charSave" class = "btn btn-success" hidden> Save</button>
-        <div>
-          <button type="button" id ="charNew" class = "btn btn-success"> Create new character</button>
-          <button type="button" id ="charNewSave" class = "btn btn-success" hidden> Save new character</button>
         </div>
         <div>
+          <div>
+            <button type="button" id ="charNew" class = "btn btn-success"> Create new character</button>
+            <button type="button" id ="charNewSave" class = "btn btn-success" hidden> Save new character</button>
+          </div>
           <div>
             <button type="button" id ="classNew" class = "btn btn-success"> New Class</button>
             <form id ="classNewForm" hidden>
@@ -222,11 +222,10 @@
             <button type="button" id ="actionclassMapStart" class = "btn btn-success"> Map Action to Class</button>
             <form id='addActionClass' hidden>
             </form>
-            <button type="button" id = 'actionclassMapSave' class = "btn btn-success" hidden> Save</button>
+            <button type="button" id ="actionclassMapSave" class = "btn btn-success" hidden>Save</button>
           </div>
 
 
-        </div>
         </div>
       </form>
 

@@ -39,7 +39,8 @@ var updateStatbyID  = 'UPDATE \`statistic\` SET strength = ?, dexterity = ?, con
 var addClass = 'INSERT INTO \`class\` (name, hit_points) VALUES (?, ?)';
 var addAction = 'INSERT INTO \`action\` (name, description) VALUES (?, ?)'
 var addClassAction = 'INSERT IGNORE INTO \`actionclass\` (action_id, class_id) VALUES (?,?)'
-
+var addInventChar = 'INSERT IGNORE INTO \`charinventory\` (inventory_id, character_id) VALUES (?, ?)'
+var deleteInventChar = "DELETE FROM \`charinventory\` WHERE charinventory.inventory_id = ? AND charinventory.character_id = ?;";
 
 app.get('/',function(req,res,next){
     context ={};
@@ -242,6 +243,15 @@ app.post('/delItem', function (req, res, next){
   console.log("inside delItem");
   var context = {};
   var query =req.body;
+  console.log(query);
+  mysql.pool.query(deleteInventChar, [query.inventoryID, query.charID], function(err, result){
+    if (err){
+      next(err)
+      return
+    }
+    console.log(result)
+    res.send(context);
+  })
 });
 
 app.post('/addNewClass', function (req, res, next){
@@ -292,6 +302,28 @@ app.post('/addNewAction', function (req, res, next){
 });
 
 // M:M mappers
+app.post('/mapCharInvent', function(req, res, next){
+  console.log('inside mapcharInvent');
+  var context = {};
+  var query = req.body;
+  console.log(query);
+  mysql.pool.query(addInventChar, [query.inventoryID, query.charID], function(err,result){
+    if (err){
+      next(err);
+      return
+    }
+    console.log(result.insertId);
+    mysql.pool.query(getCharInventory + query.charID+";", function(err,result){
+      if (err){
+        next(err);
+        return
+      }
+      context.inventory = JSON.parse(JSON.stringify(result));
+      res.send(context);
+    })
+  })
+
+})
 
 app.post('/mapActionCLass', function(req,res, next){
   console.log('inside mapactionclass');
