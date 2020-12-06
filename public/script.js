@@ -111,7 +111,12 @@ function addNewChar(e){
     newCharStart.hidden = true;
     newCharSave.hidden = false;
     clearContent();
+    charSavebutton.hidden = true;
     classSection();
+    newActionStart.hidden = true;
+    newClassStart.hidden = true;
+    newInventoryStart.hidden = true;
+    actionclassMapStart.hidden = true;
 };
 
 
@@ -137,11 +142,16 @@ function saveNewChar(){
         if (req.status >= 200 && req.status < 400){
             console.log('inside response');
             var response = JSON.parse(req.responseText)
-            curCHAR = response.char;
+            curCHAR = response.char[0];
             showAbilities(response.actions);
             saveChar();
+            showCharInven({});
             newCharStart.hidden = false;
             newCharSave.hidden = true;
+            newActionStart.hidden = false;
+            newClassStart.hidden = false;
+            newInventoryStart.hidden = false;
+            actionclassMapStart.hidden = false;
         } else {
             console.log("error in network request: " + req.statusText);
         }});
@@ -271,6 +281,7 @@ function readName(event)
                 showCharInven(response.inventory);
                 showAbilities(response.actions);
                 classInventpull();
+                charIventMapStart.hidden = false;
             }
           } else {
             console.log("Error in network request: " + req.statusText);
@@ -331,6 +342,10 @@ function saveNewAction(e){
             var response = JSON.parse(req.responseText)
             newActionStart.hidden = false;
             document.getElementById('actionNewForm').hidden = true;
+            addForm[0].firstElementChild.value = "";
+            addForm[1].firstElementChild.value = "";
+            addForm[2].firstElementChild.value = "";
+            addForm[3].firstElementChild.value = "";
             classInventpull();
           } else {
             console.log("Error in network request: " + req.statusText);
@@ -487,7 +502,7 @@ function saveactionMapper(e){
             document.getElementById('addActionClass').innerHTML = "";
             document.getElementById('addActionClass').hidden = true;
             actionclassMapSave.hidden = true;
-            showAbilities(response)
+            showAbilities(response.actions)
           } else {
             console.log("Error in network request: " + req.statusText);
           }});
@@ -562,7 +577,7 @@ function showChar(char){
     console.log(char);
     nameChar.value = char.name;
     demoChar.value = char.chosen_demographic_info;
-    classChar.children[0].value = char.chosen_class_id;
+    classChar.children[0].value = classAvailable[char.chosen_class_id -1].name;
 };
 
 function createInstance(){
@@ -664,6 +679,12 @@ function saveChar(event)
             var response = JSON.parse(req.responseText);
             console.log(response);
             showAbilities(response.actions);
+            charIventMapStart.hidden = false;
+            newActionStart.hidden = false;
+            newClassStart.hidden = false;
+            newInventoryStart.hidden = false;
+            actionclassMapStart.hidden = false;
+            newCharStart.hidden = false;
           } else {
             console.log("Error in network request: " + req.statusText);
           }});
@@ -688,6 +709,11 @@ function updateChar(event)
     charEditButton.hidden = true;
     classInventpull(); // Changes the selector for class
     classSection();
+    newActionStart.hidden = true;
+    newClassStart.hidden = true;
+    newInventoryStart.hidden = true;
+    actionclassMapStart.hidden = true;
+    newCharStart.hidden = true;
 
 }
 

@@ -336,8 +336,16 @@ app.post('/mapActionCLass', function(req,res, next){
       return
     }
     console.log(result.insertId);
-    res.send(context);
-  })
+    mysql.pool.query(getCharAction + String(query.classID)+";", function(err, result){
+      if(err){
+        next(err);
+        return
+      }
+      console.log("get actions successful");
+      context.actions = JSON.parse(JSON.stringify(result));
+      res.send(context);
+      })
+    })
 });
 
 

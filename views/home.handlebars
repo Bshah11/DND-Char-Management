@@ -10,9 +10,8 @@
           </div>
           <div class="col-auto">
             <label class="sr-only" for="inlineFormInputGroup">Username</label>
-              <select class="custom-select mb-2" id="searchType">
-                <option selected>Choose...</option>
-                <option value="character">Character</option>
+              <select class="custom-select mb-2" id="searchType" disabled>
+                <option value="character" selected>Character</option>
                 <option value="inventory">Inventory</option>
                 <option value="class">Classes</option>
                 <option value="action"> Actions</option>
@@ -52,39 +51,32 @@
                   <tr>
                     <th scope="col">Statistic</th>
                     <th scope="col">Score</th>
-                    <th scope="col">Modifier</th>
                   </tr>
                 </thead>
                 <tbody id = "statBlock">
                   <tr>
                     <th scope="row">Strength</th>
                     <td><input size="1" type="text" value="18" disabled></td>
-                    <td>+4</td>
                   </tr>
                   <tr>
                     <th scope="row">Dexterity</th>
                     <td><input size="1" type="text" value="13" disabled></td>
-                    <td>+1</td>
                   </tr>
                   <tr>
                     <th scope="row">Constitution</th>
                     <td><input size="1" type="text" value="16" disabled></td>
-                    <td>+3</td>
                   </tr>
                   <tr>
                     <th scope="row">Intelligence</th>
                     <td><input size="1" type="text" value="9" disabled></td>
-                    <td>-1</td>
                   </tr>
                   <tr>
                     <th scope="row">Wisdom</th>
                     <td><input size="1" type="text" value="12" disabled></td>
-                    <td>+1</td>
                   </tr>
                   <tr>
                     <th scope="row">Charisma</th>
                     <td><input size="1" type="text" value="10" disabled></td>
-                    <td>+0</td>
                   </tr>
                 </tbody>
               </table>
@@ -113,26 +105,26 @@
                           <td>1d8</td>
                           <td>Slicing damage</td>
                           <td>18 lbs</td>
-                          <td><button type="button" class="btn btn-danger btn-sm">Remove</button></td>
+                          
                         </tr>
                         <tr>
                           <th scope="row">Healing Potion</th>
                           <td>Healing 2d8</td>
                           <td>Drink to consume</td>
                           <td>2 lbs.</td>
-                          <td><button type="button" class="btn btn-danger btn-sm">Remove</button></td>
+                          
                         </tr>
                         <tr>
                           <th scope="row">Bedroll</th>
                           <td>N/A</td>
                           <td>Allows you to rest</td>
                           <td>15 lbs.</td>
-                          <td><button type="button" class="btn btn-danger btn-sm">Remove</button></td>
+                          
                         </tr>                     
                       </tbody>
                     </table> 
                     <div>
-                      <button type="button" id ="charInventMapStart" class = "btn btn-success"> Add Inventory to Character</button>
+                      <button type="button" id ="charInventMapStart" class = "btn btn-success" hidden> Add Inventory to Character</button>
                       <div>
                         <div id='addInventoryChar' hidden></div>
                       </div>
@@ -173,28 +165,28 @@
         <button type="button" id ="charEdit" class = "btn btn-warning"> Edit</button>
         <button type="button" id ="charSave" class = "btn btn-success" hidden> Save</button>
         </div>
-        <div>
-          <div>
+        <div class="p-4">
+          <div class="p-1">
             <button type="button" id ="charNew" class = "btn btn-success"> Create new character</button>
-            <button type="button" id ="charNewSave" class = "btn btn-success" hidden> Save new character</button>
+            <button type="button" id ="charNewSave" class = "btn btn-outline-success btn-lg" hidden> Save new character</button>
           </div>
-          <div>
+          <div class="p-1">
             <button type="button" id ="classNew" class = "btn btn-success"> New Class</button>
             <form id ="classNewForm" hidden>
               <input id='newClassName' size="8" type="text" placeholder = "Class Name">
               <input id='newClassHP' size="8" type="number" placeholder = "Class HP">
-              <button type="button" id ="classNewSave" class = "btn btn-success"> Save Class</button>
+              <button type="button" id ="classNewSave" class = "btn btn-outline-success btn-lg"> Save Class</button>
             </form>
           </div>
-          <div>
+          <div class="p-1">
             <button type="button" id ="actionNew" class = "btn btn-success"> New Action</button>
             <form id ='actionNewForm' hidden>
               <input id ='newActionName' size="8" type='text' placeholder = 'Name'>
               <input id='newActionDescription' size="18" type="text" placeholder = "Description">
-              <button type="button" id ="actionNewSave" class = "btn btn-success"> Save action</button>
+              <button type="button" id ="actionNewSave" class = "btn btn-outline-success btn-lg"> Save action</button>
             </form>
           </div>
-          <div>
+          <div class="p-1">
             <button type="button" id ="inventNewStart" class = "btn btn-success"> New Inventory Item</button>
             <form id ='addInventHolder' hidden>
               <div id ='addInventForm' class="row">
@@ -213,16 +205,16 @@
               </div>
               <div class = "row">
                 <div class = "col">
-                  <button type = "button" id='inventoryNewSave' class="btn btn-success">Add new item</button>
+                  <button type = "button" id='inventoryNewSave' class="btn btn-outline-success btn-lg">Add new item</button>
                 </div>
               </div>
             </form>
           </div>
-          <div>
+          <div class="p-1">
             <button type="button" id ="actionclassMapStart" class = "btn btn-success"> Map Action to Class</button>
             <form id='addActionClass' hidden>
             </form>
-            <button type="button" id ="actionclassMapSave" class = "btn btn-success" hidden>Save</button>
+            <button type="button" id ="actionclassMapSave" class = "btn btn-outline-success btn-lg" hidden>Save</button>
           </div>
 
 
